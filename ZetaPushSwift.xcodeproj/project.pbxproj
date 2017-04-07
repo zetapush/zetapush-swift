@@ -1,0 +1,462 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8A2922FA0830C9E8F8135C5A /* Pods_ZetaPushSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1749803BD13F37ED0A8AEB45 /* Pods_ZetaPushSwift.framework */; };
+		C53F8E491E93E83700D5C62C /* ZetaPushSmartClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53F8E481E93E83700D5C62C /* ZetaPushSmartClient.swift */; };
+		C53F8E4B1E93E86D00D5C62C /* ZetaPushWeakClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53F8E4A1E93E86D00D5C62C /* ZetaPushWeakClient.swift */; };
+		C53F8E4D1E93E88E00D5C62C /* ZetaPushMacroService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53F8E4C1E93E88E00D5C62C /* ZetaPushMacroService.swift */; };
+		C53F8E521E93F8F300D5C62C /* ZetaPushService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53F8E511E93F8F300D5C62C /* ZetaPushService.swift */; };
+		C58107F81E8A8695008266F0 /* ClientHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58107F41E8A8695008266F0 /* ClientHelper.swift */; };
+		C58107F91E8A8695008266F0 /* ClientHelper+Handshake.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58107F51E8A8695008266F0 /* ClientHelper+Handshake.swift */; };
+		C58107FA1E8A8695008266F0 /* ZetaPushClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58107F61E8A8695008266F0 /* ZetaPushClient.swift */; };
+		C5896E291E84121A0037800F /* ZetaPushSwift.h in Headers */ = {isa = PBXBuildFile; fileRef = C5896E271E84121A0037800F /* ZetaPushSwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C5896E681E841D190037800F /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5896E671E841D190037800F /* Transport.swift */; };
+		C5896E6A1E841D450037800F /* WebsocketTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5896E691E841D450037800F /* WebsocketTransport.swift */; };
+		C5896E6D1E841DFE0037800F /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5896E6C1E841DFE0037800F /* StringExtensions.swift */; };
+		C5896E6F1E841E350037800F /* NsError+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5896E6E1E841E350037800F /* NsError+Helper.swift */; };
+		C5896E711E841EBE0037800F /* CometdClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5896E701E841EBE0037800F /* CometdClient.swift */; };
+		C5896E731E841EEF0037800F /* CometdClient+Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5896E721E841EEF0037800F /* CometdClient+Action.swift */; };
+		C5896E751E841F0A0037800F /* CometdClient+Bayeux.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5896E741E841F0A0037800F /* CometdClient+Bayeux.swift */; };
+		C5896E771E841F2C0037800F /* CometdClient+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5896E761E841F2C0037800F /* CometdClient+Helper.swift */; };
+		C5896E791E841F4C0037800F /* CometdClient+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5896E781E841F4C0037800F /* CometdClient+Parsing.swift */; };
+		C5896E7B1E841F7F0037800F /* CometdClient+Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5896E7A1E841F7F0037800F /* CometdClient+Subscription.swift */; };
+		C5896E7D1E841F9A0037800F /* CometdClient+Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5896E7C1E841F9A0037800F /* CometdClient+Transport.swift */; };
+		C5896E7F1E841FB90037800F /* CometdClientDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5896E7E1E841FB90037800F /* CometdClientDelegate.swift */; };
+		C5896E811E841FE10037800F /* CometdSubscriptionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5896E801E841FE10037800F /* CometdSubscriptionModel.swift */; };
+		C5F9C0CF1E8D2E47000B8ECF /* ZetaPushServiceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F9C0CD1E8D2E47000B8ECF /* ZetaPushServiceDelegate.swift */; };
+		C5F9C0D01E8D2E47000B8ECF /* ConnectionStatusDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F9C0CE1E8D2E47000B8ECF /* ConnectionStatusDelegate.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1749803BD13F37ED0A8AEB45 /* Pods_ZetaPushSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZetaPushSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		623B68CCE3F4C486F2BB54D4 /* Pods-ZetaPushSwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZetaPushSwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZetaPushSwift/Pods-ZetaPushSwift.release.xcconfig"; sourceTree = "<group>"; };
+		C53F8E481E93E83700D5C62C /* ZetaPushSmartClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushSmartClient.swift; sourceTree = "<group>"; };
+		C53F8E4A1E93E86D00D5C62C /* ZetaPushWeakClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushWeakClient.swift; sourceTree = "<group>"; };
+		C53F8E4C1E93E88E00D5C62C /* ZetaPushMacroService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushMacroService.swift; sourceTree = "<group>"; };
+		C53F8E511E93F8F300D5C62C /* ZetaPushService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushService.swift; sourceTree = "<group>"; };
+		C58107F41E8A8695008266F0 /* ClientHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientHelper.swift; sourceTree = "<group>"; };
+		C58107F51E8A8695008266F0 /* ClientHelper+Handshake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ClientHelper+Handshake.swift"; sourceTree = "<group>"; };
+		C58107F61E8A8695008266F0 /* ZetaPushClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushClient.swift; sourceTree = "<group>"; };
+		C5896E241E84121A0037800F /* ZetaPushSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ZetaPushSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C5896E271E84121A0037800F /* ZetaPushSwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZetaPushSwift.h; sourceTree = "<group>"; };
+		C5896E281E84121A0037800F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C5896E671E841D190037800F /* Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
+		C5896E691E841D450037800F /* WebsocketTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebsocketTransport.swift; sourceTree = "<group>"; };
+		C5896E6C1E841DFE0037800F /* StringExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
+		C5896E6E1E841E350037800F /* NsError+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NsError+Helper.swift"; sourceTree = "<group>"; };
+		C5896E701E841EBE0037800F /* CometdClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CometdClient.swift; sourceTree = "<group>"; };
+		C5896E721E841EEF0037800F /* CometdClient+Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CometdClient+Action.swift"; sourceTree = "<group>"; };
+		C5896E741E841F0A0037800F /* CometdClient+Bayeux.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CometdClient+Bayeux.swift"; sourceTree = "<group>"; };
+		C5896E761E841F2C0037800F /* CometdClient+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CometdClient+Helper.swift"; sourceTree = "<group>"; };
+		C5896E781E841F4C0037800F /* CometdClient+Parsing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CometdClient+Parsing.swift"; sourceTree = "<group>"; };
+		C5896E7A1E841F7F0037800F /* CometdClient+Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CometdClient+Subscription.swift"; sourceTree = "<group>"; };
+		C5896E7C1E841F9A0037800F /* CometdClient+Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CometdClient+Transport.swift"; sourceTree = "<group>"; };
+		C5896E7E1E841FB90037800F /* CometdClientDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CometdClientDelegate.swift; sourceTree = "<group>"; };
+		C5896E801E841FE10037800F /* CometdSubscriptionModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CometdSubscriptionModel.swift; sourceTree = "<group>"; };
+		C5F9C0CD1E8D2E47000B8ECF /* ZetaPushServiceDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushServiceDelegate.swift; sourceTree = "<group>"; };
+		C5F9C0CE1E8D2E47000B8ECF /* ConnectionStatusDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionStatusDelegate.swift; sourceTree = "<group>"; };
+		E327A1F3727E6CF61C97EADC /* Pods-ZetaPushSwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZetaPushSwift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZetaPushSwift/Pods-ZetaPushSwift.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C5896E201E84121A0037800F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A2922FA0830C9E8F8135C5A /* Pods_ZetaPushSwift.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4122379FA7B9F86FDE9BB33D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E327A1F3727E6CF61C97EADC /* Pods-ZetaPushSwift.debug.xcconfig */,
+				623B68CCE3F4C486F2BB54D4 /* Pods-ZetaPushSwift.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		7D2ADD18D0DB2007B0C7171F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1749803BD13F37ED0A8AEB45 /* Pods_ZetaPushSwift.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C53F8E501E93E8EA00D5C62C /* ZetaPush */ = {
+			isa = PBXGroup;
+			children = (
+				C5F9C0CD1E8D2E47000B8ECF /* ZetaPushServiceDelegate.swift */,
+				C58107F41E8A8695008266F0 /* ClientHelper.swift */,
+				C58107F51E8A8695008266F0 /* ClientHelper+Handshake.swift */,
+				C58107F61E8A8695008266F0 /* ZetaPushClient.swift */,
+				C53F8E4C1E93E88E00D5C62C /* ZetaPushMacroService.swift */,
+				C53F8E4A1E93E86D00D5C62C /* ZetaPushWeakClient.swift */,
+				C53F8E481E93E83700D5C62C /* ZetaPushSmartClient.swift */,
+				C53F8E511E93F8F300D5C62C /* ZetaPushService.swift */,
+			);
+			name = ZetaPush;
+			sourceTree = "<group>";
+		};
+		C5896E1A1E8412190037800F = {
+			isa = PBXGroup;
+			children = (
+				C5896E261E84121A0037800F /* ZetaPushSwift */,
+				C5896E251E84121A0037800F /* Products */,
+				4122379FA7B9F86FDE9BB33D /* Pods */,
+				7D2ADD18D0DB2007B0C7171F /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		C5896E251E84121A0037800F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C5896E241E84121A0037800F /* ZetaPushSwift.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C5896E261E84121A0037800F /* ZetaPushSwift */ = {
+			isa = PBXGroup;
+			children = (
+				C53F8E501E93E8EA00D5C62C /* ZetaPush */,
+				C5F9C0CE1E8D2E47000B8ECF /* ConnectionStatusDelegate.swift */,
+				C5896E671E841D190037800F /* Transport.swift */,
+				C5896E691E841D450037800F /* WebsocketTransport.swift */,
+				C5896E271E84121A0037800F /* ZetaPushSwift.h */,
+				C5896E281E84121A0037800F /* Info.plist */,
+				C5896E6C1E841DFE0037800F /* StringExtensions.swift */,
+				C5896E6E1E841E350037800F /* NsError+Helper.swift */,
+				C5896E701E841EBE0037800F /* CometdClient.swift */,
+				C5896E721E841EEF0037800F /* CometdClient+Action.swift */,
+				C5896E741E841F0A0037800F /* CometdClient+Bayeux.swift */,
+				C5896E761E841F2C0037800F /* CometdClient+Helper.swift */,
+				C5896E781E841F4C0037800F /* CometdClient+Parsing.swift */,
+				C5896E7A1E841F7F0037800F /* CometdClient+Subscription.swift */,
+				C5896E7C1E841F9A0037800F /* CometdClient+Transport.swift */,
+				C5896E7E1E841FB90037800F /* CometdClientDelegate.swift */,
+				C5896E801E841FE10037800F /* CometdSubscriptionModel.swift */,
+			);
+			path = ZetaPushSwift;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		C5896E211E84121A0037800F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C5896E291E84121A0037800F /* ZetaPushSwift.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		C5896E231E84121A0037800F /* ZetaPushSwift */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C5896E2C1E84121A0037800F /* Build configuration list for PBXNativeTarget "ZetaPushSwift" */;
+			buildPhases = (
+				2EE5CF13AB005E925E1FA36F /* [CP] Check Pods Manifest.lock */,
+				C5896E1F1E84121A0037800F /* Sources */,
+				C5896E201E84121A0037800F /* Frameworks */,
+				C5896E211E84121A0037800F /* Headers */,
+				C5896E221E84121A0037800F /* Resources */,
+				BECAF55DD2ACF4E72EA978C5 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ZetaPushSwift;
+			productName = ZetaPushSwift;
+			productReference = C5896E241E84121A0037800F /* ZetaPushSwift.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C5896E1B1E8412190037800F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = ZetaPush;
+				TargetAttributes = {
+					C5896E231E84121A0037800F = {
+						CreatedOnToolsVersion = 8.2.1;
+						LastSwiftMigration = 0820;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = C5896E1E1E8412190037800F /* Build configuration list for PBXProject "ZetaPushSwift" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = C5896E1A1E8412190037800F;
+			productRefGroup = C5896E251E84121A0037800F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C5896E231E84121A0037800F /* ZetaPushSwift */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C5896E221E84121A0037800F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2EE5CF13AB005E925E1FA36F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		BECAF55DD2ACF4E72EA978C5 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ZetaPushSwift/Pods-ZetaPushSwift-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C5896E1F1E84121A0037800F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C5896E731E841EEF0037800F /* CometdClient+Action.swift in Sources */,
+				C5896E7B1E841F7F0037800F /* CometdClient+Subscription.swift in Sources */,
+				C5896E751E841F0A0037800F /* CometdClient+Bayeux.swift in Sources */,
+				C5896E811E841FE10037800F /* CometdSubscriptionModel.swift in Sources */,
+				C5896E771E841F2C0037800F /* CometdClient+Helper.swift in Sources */,
+				C5896E6D1E841DFE0037800F /* StringExtensions.swift in Sources */,
+				C53F8E491E93E83700D5C62C /* ZetaPushSmartClient.swift in Sources */,
+				C5F9C0D01E8D2E47000B8ECF /* ConnectionStatusDelegate.swift in Sources */,
+				C5896E6F1E841E350037800F /* NsError+Helper.swift in Sources */,
+				C5896E711E841EBE0037800F /* CometdClient.swift in Sources */,
+				C5896E7F1E841FB90037800F /* CometdClientDelegate.swift in Sources */,
+				C58107F81E8A8695008266F0 /* ClientHelper.swift in Sources */,
+				C5896E681E841D190037800F /* Transport.swift in Sources */,
+				C5896E791E841F4C0037800F /* CometdClient+Parsing.swift in Sources */,
+				C53F8E4B1E93E86D00D5C62C /* ZetaPushWeakClient.swift in Sources */,
+				C53F8E521E93F8F300D5C62C /* ZetaPushService.swift in Sources */,
+				C5896E6A1E841D450037800F /* WebsocketTransport.swift in Sources */,
+				C58107FA1E8A8695008266F0 /* ZetaPushClient.swift in Sources */,
+				C58107F91E8A8695008266F0 /* ClientHelper+Handshake.swift in Sources */,
+				C5F9C0CF1E8D2E47000B8ECF /* ZetaPushServiceDelegate.swift in Sources */,
+				C53F8E4D1E93E88E00D5C62C /* ZetaPushMacroService.swift in Sources */,
+				C5896E7D1E841F9A0037800F /* CometdClient+Transport.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		C5896E2A1E84121A0037800F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		C5896E2B1E84121A0037800F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		C5896E2D1E84121A0037800F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E327A1F3727E6CF61C97EADC /* Pods-ZetaPushSwift.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = ZetaPushSwift/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.zetapush.ZetaPushSwift;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		C5896E2E1E84121A0037800F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 623B68CCE3F4C486F2BB54D4 /* Pods-ZetaPushSwift.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = ZetaPushSwift/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.zetapush.ZetaPushSwift;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C5896E1E1E8412190037800F /* Build configuration list for PBXProject "ZetaPushSwift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C5896E2A1E84121A0037800F /* Debug */,
+				C5896E2B1E84121A0037800F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C5896E2C1E84121A0037800F /* Build configuration list for PBXNativeTarget "ZetaPushSwift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C5896E2D1E84121A0037800F /* Debug */,
+				C5896E2E1E84121A0037800F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C5896E1B1E8412190037800F /* Project object */;
+}

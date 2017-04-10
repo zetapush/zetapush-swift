@@ -30,7 +30,7 @@ internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDe
             webSocket.pongDelegate = self
             webSocket.connect()
             
-            print("Cometd: Opening connection with \(self.urlString)")
+            print("Cometd: Opening connection with \(String(describing: self.urlString))")
         }
     }
     

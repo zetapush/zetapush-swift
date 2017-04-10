@@ -23,9 +23,13 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     var token:String = ""
     var publicToken:String = ""
     
-    var subscriptionQueue = Array<Subscription>()
+    var firstHandshakeFlag:Bool = true
     
-    fileprivate var wasConnected:Bool = false
+    var subscriptionQueue = Array<Subscription>()
+    // Flag used for automatic reconnection
+    var wasConnected:Bool = false
+    
+    
     fileprivate var authentication: AbstractHandshake?
     var cometdClient: CometdClient?
     
@@ -56,13 +60,13 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         self.cometdClient?.delegate = self
     }
     
-    
     open func setAuthentication(authentication: AbstractHandshake){
         self.authentication = authentication
     }
     
     // Disconnect from server
     open func disconnect(){
+        self.wasConnected = false;
         cometdClient!.disconnectFromServer()
     }
     
@@ -102,23 +106,14 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     }
     
     open func subscribe(_ channel:String, block:ChannelSubscriptionBlock?=nil) -> Subscription {
-        let (cometdSubscriptionState, sub) = self.cometdClient!.subscribeToChannel(channel, block: block)
-        print ("subscribe ", cometdSubscriptionState)
-        switch cometdSubscriptionState {
-        case .subscribingTo:
-            print ("subscribe subscribingTo")
-            self.subscriptionQueue.append(sub!)
-        default:
-            print ("subscribe default")
-        }
-        /*
-        if cometdSubscriptionState == CometdSubscriptionState.subscribed(nil) {
-            print ("subscribe subscribed")
-        }
+        let (_, sub) = self.cometdClient!.subscribeToChannel(channel, block: block)
+        
         if let sub = sub {
             self.subscriptionQueue.append(sub)
+        } else {
+            print ("sub is NILLLLLL", channel)
         }
-        */
+        
         return sub!
     }
     
@@ -127,6 +122,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     }
     
     open func unsubscribe(_ subscription:Subscription){
+        print("ClientHelper unsubscribe")
         self.cometdClient!.unsubscribeFromChannel(subscription)
         if let index = self.subscriptionQueue.index(of: subscription){
             self.subscriptionQueue.remove(at: index)
@@ -209,15 +205,23 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         self.userId = authentication["userId"] as! String
         storeHandshakeToken(authentication)
         
-        // Automatic resubscribe after handshake
-        var tempArray = Array<Subscription>()
-        for sub in self.subscriptionQueue {
-            tempArray.append(sub)
+        self.wasConnected = true
+        
+        // Automatic resubscribe after handshake (not the first one)
+        if !firstHandshakeFlag {
+            
+            var tempArray = Array<Subscription>()
+            for sub in self.subscriptionQueue {
+                tempArray.append(sub)
+            }
+            self.subscriptionQueue.removeAll()
+            for sub in tempArray {
+                _ = self.subscribe(sub.channel, block: sub.callback)
+            }
         }
-        self.subscriptionQueue.removeAll()
-        for sub in tempArray {
-            _ = self.subscribe(sub.channel, block: sub.callback)
-        }
+        
+        firstHandshakeFlag = false
+ 
     }
     
     open func handshakeFailed(_ client: CometdClient){
@@ -227,7 +231,22 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     
     open func connectionFailed(_ client: CometdClient) {
         print("ClientHelper Failed to connect to Cometd server!")
+        if self.wasConnected {
+            self.reconnectToServer()
+        }
         onConnectionBroken?(self)
+    }
+    
+    func reconnectToServer(){
+        Timer.scheduledTimer(timeInterval: 10,
+                             target: self,
+                             selector: #selector(self.connectionFailedTimer),
+                             userInfo: nil,
+                             repeats: false)
+    }
+    
+    func connectionFailedTimer(timer: Timer){
+        print("timer fired")
     }
     
     open func disconnectedFromServer(_ client: CometdClient) {

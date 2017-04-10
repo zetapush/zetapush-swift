@@ -54,7 +54,6 @@ open class CometdClient : TransportDelegate {
     var connectionInitiated:Bool?
     var messageNumber:UInt32 = 0
     
-    
     var queuedSubscriptions = Array<CometdSubscriptionModel>()
     var pendingSubscriptions = Array<CometdSubscriptionModel>()
     var openSubscriptions = Array<CometdSubscriptionModel>()
@@ -191,6 +190,19 @@ open class CometdClient : TransportDelegate {
             _ = removeChannelFromOpenSubscriptions(subscription.channel)
             _ = removeChannelFromPendingSubscriptions(subscription.channel)
         }
+        
+    }
+    
+    open func clearSubscriptionFromChannel(_ subscription: Subscription) {
+        _ = removeChannelFromQueuedSubscriptions(subscription.channel)
+        // Empty the multi-callback storage array
+        self.channelSubscriptionBlocks[subscription.channel]?.removeAll()
+        // Unsubscribe from the server
+        self.unsubscribe(subscription.channel)
+        
+        self.channelSubscriptionBlocks[subscription.channel] = nil;
+        _ = removeChannelFromOpenSubscriptions(subscription.channel)
+        _ = removeChannelFromPendingSubscriptions(subscription.channel)
         
     }
 }

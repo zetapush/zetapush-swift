@@ -34,9 +34,9 @@ extension CometdClient {
     }
     
     func unsubscribeAllSubscriptions() {
-        //let all = queuedSubscriptions + openSubscriptions + pendingSubscriptions
+        let all = queuedSubscriptions + openSubscriptions + pendingSubscriptions
         
-        //all.forEach({ unsubscribeFromChannel(Subscription(subscription:$0.subscriptionUrl) })
+        all.forEach({ clearSubscriptionFromChannel(Subscription(callback: nil, channel:$0.subscriptionUrl, id:$0.id!)) })
     }
     
     // MARK:

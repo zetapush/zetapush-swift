@@ -232,21 +232,17 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     open func connectionFailed(_ client: CometdClient) {
         print("ClientHelper Failed to connect to Cometd server!")
         if self.wasConnected {
-            self.reconnectToServer()
+            Timer.scheduledTimer(timeInterval: 10,
+                                 target: self,
+                                 selector: #selector(self.connectionFailedTimer),
+                                 userInfo: nil,
+                                 repeats: false)
         }
         onConnectionBroken?(self)
     }
     
-    func reconnectToServer(){
-        Timer.scheduledTimer(timeInterval: 10,
-                             target: self,
-                             selector: #selector(self.connectionFailedTimer),
-                             userInfo: nil,
-                             repeats: false)
-    }
-    
     func connectionFailedTimer(timer: Timer){
-        print("timer fired")
+        self.connect()
     }
     
     open func disconnectedFromServer(_ client: CometdClient) {

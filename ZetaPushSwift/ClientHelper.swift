@@ -73,18 +73,19 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     // Connect to server
     open func connect(){
         
-        self.server = "ws://vm-str-2:8080/str/strd"
+        //self.server = "ws://vm-str-2:8080/str/strd"
         //self.server = "ws://localhost:5222/faye"
         
         if self.server == "" {
             // Check the http://api.zpush.io with sandboxId
-
-            let url = URL(string: self.apiUrl + sandboxId)
+            
+            //let url = URL(string: "https://api.zpush.io/mQPnwzCF")
+            let url = URL(string: self.apiUrl + "/" + sandboxId)
             
             let task = URLSession.shared.dataTask(with: url!) { data, response, error in
                 
                 guard error == nil else {
-                    print (error!)
+                    print ("Error", error!)
                     return
                 }
                 
@@ -93,16 +94,25 @@ open class ClientHelper : NSObject, CometdClientDelegate{
                     return
                 }
                 
-                let json = try! JSONSerialization.jsonObject(with: data!, options: [])
-                print (json)
+                let json = try! JSONSerialization.jsonObject(with: data!, options: []) as! [String:AnyObject]
+                let servers = json["servers"]
+                let randomIndex = Int(arc4random_uniform(UInt32(servers!.count)))
+                self.server = servers?[randomIndex] as! String + "/strd"
+                print("ZetaPush selected Server", self.server)
+                
+                self.cometdClient?.configure(url: self.server)
+                self.cometdClient?.connectHandshake(self.authentication!.getHandshakeFields(self))
             }
             
             task.resume()
+ 
             
+        } else {
+            self.cometdClient?.configure(url: self.server)
+            self.cometdClient?.connectHandshake(self.authentication!.getHandshakeFields(self))
         }
         
-        self.cometdClient?.configure(url: self.server)
-        self.cometdClient?.connectHandshake(self.authentication!.getHandshakeFields(self))
+        
     }
     
     open func subscribe(_ channel:String, block:ChannelSubscriptionBlock?=nil) -> Subscription {
@@ -134,6 +144,10 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         disconnect()
     }
     
+    open func setForceSecure(_ isSecure: Bool){
+        self.cometdClient!.setForceSecure(isSecure)
+    }
+    
     /*
      Must be overriden by ClientHelper descendants
      */
@@ -159,8 +173,12 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         return self.sandboxId
     }
     
-    open func getServers(){
-        //return self.servers
+    open func getServer() -> String{
+        return self.server
+    }
+    
+    open func setServerUrl(_ serverUrl: String){
+        self.server = serverUrl
     }
     
     open func getUserId() -> String{

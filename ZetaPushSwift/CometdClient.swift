@@ -54,6 +54,8 @@ open class CometdClient : TransportDelegate {
     var connectionInitiated:Bool?
     var messageNumber:UInt32 = 0
     
+    var forceSecure:Bool = false
+    
     var queuedSubscriptions = Array<CometdSubscriptionModel>()
     var pendingSubscriptions = Array<CometdSubscriptionModel>()
     var openSubscriptions = Array<CometdSubscriptionModel>()
@@ -88,10 +90,27 @@ open class CometdClient : TransportDelegate {
     }
     
     open func configure(url: String, backoffIncrement: Int=1000, maxBackoff: Int=60000, appendMessageTypeToURL: Bool = false){
-        self.cometdURLString = url
+        
+        // Check protocol (only websocket for now)
+        let rawUrl = URL(string: url)
+        let port = rawUrl?.port
+        let path = rawUrl?.path
+        let host = rawUrl?.host
+        var scheme: String = "ws://"
+        if forceSecure {
+            scheme = "wss://"
+        }
+        
+        if rawUrl?.port != nil {
+            self.cometdURLString = scheme + host! + ":" + String(port!) + path!
+            
+        } else {
+            self.cometdURLString = scheme + host! + path!
+        }
+        
         self.cometdConnected = false;
         
-        self.transport = WebsocketTransport(url: url)
+        self.transport = WebsocketTransport(url: self.cometdURLString!)
         self.transport!.delegate = self;
     }
     
@@ -113,6 +132,10 @@ open class CometdClient : TransportDelegate {
     
     open func isConnected() -> Bool {
         return self.cometdConnected ?? false
+    }
+    
+    open func setForceSecure(_ isSecure: Bool){
+        self.forceSecure = isSecure
     }
     
     open func disconnectFromServer() {

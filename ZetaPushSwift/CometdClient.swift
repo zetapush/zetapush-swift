@@ -160,7 +160,22 @@ open class CometdClient : TransportDelegate {
     
     open func subscribeToChannel(_ model:CometdSubscriptionModel, block:ChannelSubscriptionBlock?=nil) -> (CometdSubscriptionState, Subscription?) {
         guard !self.isSubscribedToChannel(model.subscriptionUrl) else {
-            return (.subscribed(model), nil)
+            
+            var sub = Subscription(callback:nil, channel: model.subscriptionUrl, id: 0)
+            if let block = block {
+                
+                if self.channelSubscriptionBlocks[model.subscriptionUrl] == nil
+                {
+                    self.channelSubscriptionBlocks[model.subscriptionUrl] = []
+                }
+                
+                sub.callback = block
+                sub.id = self.channelSubscriptionBlocks[model.subscriptionUrl]!.count
+                
+                self.channelSubscriptionBlocks[model.subscriptionUrl]!.append(sub)
+            }
+            
+            return (.subscribed(model), sub)
         }
         
         guard !self.pendingSubscriptions.contains(where: { $0 == model }) else {

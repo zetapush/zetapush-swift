@@ -8,4 +8,5 @@ target 'ZetaPushSwift' do
   # Pods for ZetaPushSwift
   pod "Starscream"
   pod "SwiftyJSON"
+  pod "PromiseKit", "~> 4.0"
 end

@@ -95,9 +95,9 @@ open class ClientHelper : NSObject, CometdClientDelegate{
                 }
                 
                 let json = try! JSONSerialization.jsonObject(with: data!, options: []) as! [String:AnyObject]
-                let servers = json["servers"]
-                let randomIndex = Int(arc4random_uniform(UInt32(servers!.count)))
-                self.server = servers?[randomIndex] as! String + "/strd"
+                let servers = json["servers"] as! [AnyObject]
+                let randomIndex = Int(arc4random_uniform(UInt32(servers.count)))
+                self.server = servers[randomIndex] as! String + "/strd"
                 print("ZetaPush selected Server", self.server)
                 
                 self.cometdClient?.configure(url: self.server)

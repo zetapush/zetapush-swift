@@ -6,7 +6,20 @@
 //  Copyright © 2017 ZetaPush. All rights reserved.
 //
 
+/*
+    Macro Service
+ 
+    Use his own subscription list to handle generic /completed channel when we call a macro with hardfail = true
+ 
+    For the promise asyncCall function, the global (cometD) subscription list is used
+ */
 import Foundation
+import PromiseKit
+
+enum ZetaPushMacroError: Error {
+    case genericError(errorCode: String, errorMessage: String)
+    case unknowError
+}
 
 open class ZetaPushMacroService : NSObject {
     
@@ -17,22 +30,25 @@ open class ZetaPushMacroService : NSObject {
     var macroChannel: String?
     var macroChannelError: String?
     
-    var channelSubscriptionBlocks = Dictionary<String, Array<ChannelSubscriptionBlock>>()
+    var channelSubscriptionBlocks = Dictionary<String, Array<Subscription>>()
     
+    
+    // Callback for /completed macro channel
     lazy var channelBlockMacroCompleted:ChannelSubscriptionBlock = {(messageDict) -> Void in
         
         print("ZetaPushMacroService channelBlockMacroCompleted", messageDict, messageDict["name"] as Any)
         
         let macroChannel = self.composeServiceChannel(messageDict["name"] as! String)
-        let result: AnyObject = messageDict["result"] as AnyObject
-        if let channelBlock = self.channelSubscriptionBlocks[macroChannel] {
-            for channel in channelBlock {
-                channel(result as! NSDictionary)
+        if let result = messageDict["result"] as? NSDictionary {
+            if let channelBlock = self.channelSubscriptionBlocks[macroChannel] {
+                for channel in channelBlock {
+                    channel.callback!(result)
+                }
             }
         }
-        
     }
     
+    // Callback for /error macro channel
     lazy var channelBlockMacroError:ChannelSubscriptionBlock = {(messageDict) -> Void in
         print("ZetaPushMacroService channelBlockMacroError", messageDict)
         
@@ -73,20 +89,29 @@ open class ZetaPushMacroService : NSObject {
     open func subscribe(verb: String, block:ChannelSubscriptionBlock?=nil) -> Subscription {
         
         let subscribedChannel = composeServiceChannel(verb)
+        var sub = Subscription(callback:nil, channel: subscribedChannel, id: 0)
         if let block = block {
             if self.channelSubscriptionBlocks[subscribedChannel] == nil
             {
                 self.channelSubscriptionBlocks[subscribedChannel] = []
             }
             // Create a structure to store the callback and the id of 
-            self.channelSubscriptionBlocks[subscribedChannel]!.append(block)
+            sub.callback = block
+            sub.id = self.channelSubscriptionBlocks[subscribedChannel]!.count
+            self.channelSubscriptionBlocks[subscribedChannel]!.append(sub)
         }
                 
-        return self.clientHelper!.subscribe(subscribedChannel, block: channelBlockMacroCompleted)
+        return sub
     }
     
     open func unsubscribe(_ subscription:Subscription){
-        self.clientHelper?.unsubscribe(subscription)
+        var subscriptionArray = self.channelSubscriptionBlocks[subscription.channel]
+        if let index = subscriptionArray?.index(of: subscription){
+            subscriptionArray?.remove(at: index)
+        }
+        if subscriptionArray?.count == 0 {
+            self.channelSubscriptionBlocks[subscription.channel] = nil;
+        }
     }
     
     open func call(verb:String, parameters:[String:AnyObject]) {
@@ -95,8 +120,51 @@ open class ZetaPushMacroService : NSObject {
             "hardFail": true as AnyObject,
             "parameters": parameters as AnyObject
         ]
-        clientHelper?.publish(composeServiceChannel("call"), message: dict)
+        self.clientHelper?.publish(composeServiceChannel("call"), message: dict)
     }
     
+    /*
+        asynCall return a promise
+     */
+    open func asyncCall(verb:String, parameters:[String:AnyObject]) -> Promise<NSDictionary> {
+        return Promise { fullfill, reject in
+            
+            let dict:[String:AnyObject] = [
+                "name": verb as AnyObject,
+                "hardFail": false as AnyObject,
+                "parameters": parameters as AnyObject
+            ]
+            
+            var sub: Subscription? = nil
+            
+            let channelBlockMacroCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
+                self.clientHelper?.unsubscribe(sub!)
+                
+                if let result = messageDict["result"] as? NSDictionary {
+                    fullfill(result)
+                }
+                if messageDict.object(forKey: "errors") != nil {
+                    if let errors = messageDict["errors"] as? NSArray {
+                        if errors.count > 0 {
+                             if let error = errors[0] as? NSDictionary {
+                             let errorCode = error["code"] as? String
+                             let errorMessage = error["message"] as? String
+                             
+                             reject(ZetaPushMacroError.genericError(errorCode: errorCode!, errorMessage: errorMessage!))
+                             } else {
+                             reject(ZetaPushMacroError.unknowError)
+                             }
+                        }
+                    }
+                }
+                
+            }
+            
+            sub = self.clientHelper?.subscribe(composeServiceChannel(verb), block: channelBlockMacroCall)
+ 
+            self.clientHelper?.publish(composeServiceChannel("call"), message: dict)
+            
+        }
+    }
     
 }

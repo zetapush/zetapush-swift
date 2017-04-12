@@ -20,6 +20,8 @@ struct zetaPushDefaultKeys{
     static let publicToken = "zetapush.publicToken"
 }
 
+public typealias ZPChannelSubscriptionBlock = (ZPMessage) -> Void
+
 /*
  Generic (useless) client for ZetaPush
  Use Weak or Smart client instead
@@ -30,4 +32,19 @@ open class ZetaPushClient: ClientHelper {
 }
 
 
+open class ZPMessage {
+    
+    required public init () {
+        
+    }
+    
+    open func toDict() -> NSDictionary {
+        preconditionFailure("This method must be overridden")
+    }
+    
+    open func fromDict(_ dict : NSDictionary) {
+        preconditionFailure("This method must be overridden")
+    }
+    
+}
 

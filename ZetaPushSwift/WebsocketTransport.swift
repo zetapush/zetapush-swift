@@ -17,14 +17,12 @@ internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDe
     
     convenience required internal init(url: String) {
         self.init()
-        print ("WebsocketTransport init", url)
         self.urlString = url
     }
     
     func openConnection() {
         self.closeConnection()
         self.webSocket = WebSocket(url: URL(string:self.urlString!)!)
-        print ("WebsocketTransport openConnection", self.urlString!)
         if let webSocket = self.webSocket {
             webSocket.delegate = self
             webSocket.pongDelegate = self
@@ -36,7 +34,6 @@ internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDe
     
     func closeConnection() {
         if let webSocket = self.webSocket {
-            print("Cometd: Closing connection")
             
             webSocket.delegate = nil
             webSocket.disconnect(forceTimeout: 0)
@@ -59,12 +56,10 @@ internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDe
     
     // MARK: Websocket Delegate
     internal func websocketDidConnect(socket: WebSocket) {
-        print("WebsocketTransport websocketDidConnect")
         self.delegate?.didConnect()
     }
     
     internal func websocketDidDisconnect(socket: WebSocket, error: NSError?) {
-        print("WebsocketTransport websocketDidDisconnect")
         if error == nil {
             self.delegate?.didDisconnect(NSError(error: .lostConnection))
         } else {

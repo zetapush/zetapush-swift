@@ -82,6 +82,10 @@ open class ZetaPushMacroService : NSObject {
         }
     }
     
+    public convenience init(_ clientHelper: ClientHelper){
+        self.init(clientHelper, deploymentId: zetaPushDefaultConfig.macroDeployementId)
+    }
+    
     private func composeServiceChannel(_ verb: String) -> String {
         return "/service/" + self.clientHelper!.getSandboxId() + "/" + self.deploymentId! + "/" + verb
     }
@@ -127,7 +131,7 @@ open class ZetaPushMacroService : NSObject {
         asynCall return a promise
      */
     open func asyncCall(verb:String, parameters:[String:AnyObject]) -> Promise<NSDictionary> {
-        return Promise { fullfill, reject in
+        return Promise { fulfill, reject in
             
             let dict:[String:AnyObject] = [
                 "name": verb as AnyObject,
@@ -141,7 +145,7 @@ open class ZetaPushMacroService : NSObject {
                 self.clientHelper?.unsubscribe(sub!)
                 
                 if let result = messageDict["result"] as? NSDictionary {
-                    fullfill(result)
+                    fulfill(result)
                 }
                 if messageDict.object(forKey: "errors") != nil {
                     if let errors = messageDict["errors"] as? NSArray {
@@ -167,4 +171,110 @@ open class ZetaPushMacroService : NSObject {
         }
     }
     
+    open func asyncCallGeneric<T : ZPMessage, U: ZPMessage>(verb:String, parameters:T) -> Promise<U> {
+        return Promise { fulfill, reject in
+            
+            let requestId = UUID().uuidString
+            
+            let dict:[String:AnyObject] = [
+                "name": verb as AnyObject,
+                "hardFail": false as AnyObject,
+                "parameters": parameters.toDict(),
+                "requestId": requestId as AnyObject
+            ]
+            
+            var sub: Subscription? = nil
+            
+            let channelBlockMacroCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
+                // Check if the requestId is similar to the one sent
+                if messageDict.object(forKey: "requestId") != nil {
+                    if let msgRequestId = messageDict["requestId"] as? String {
+                        if msgRequestId != requestId {
+                            return
+                        }
+                    }
+                }
+                
+                self.clientHelper?.unsubscribe(sub!)
+                
+                if let result = messageDict["result"] as? NSDictionary {
+                    
+                    let zpMessage = U()
+                    zpMessage.fromDict(result)
+                    
+                    fulfill(zpMessage)
+                }
+                if messageDict.object(forKey: "errors") != nil {
+                    if let errors = messageDict["errors"] as? NSArray {
+                        if errors.count > 0 {
+                            if let error = errors[0] as? NSDictionary {
+                                let errorCode = error["code"] as? String
+                                let errorMessage = error["message"] as? String
+                                
+                                reject(ZetaPushMacroError.genericError(errorCode: errorCode!, errorMessage: errorMessage!))
+                            } else {
+                                reject(ZetaPushMacroError.unknowError)
+                            }
+                        }
+                    }
+                }
+                
+            }
+            
+            sub = self.clientHelper?.subscribe(composeServiceChannel(verb), block: channelBlockMacroCall)
+            
+            self.clientHelper?.publish(composeServiceChannel("call"), message: dict)
+            
+        }
+    }
+    
+}
+
+open class ZetaPushMacroPublisher{
+    
+    var clientHelper: ClientHelper?
+    public var zetaPushMacroService: ZetaPushMacroService
+    
+    public init(_ clientHelper: ClientHelper, deploymentId: String){
+        self.clientHelper = clientHelper
+        self.zetaPushMacroService = ZetaPushMacroService(clientHelper, deploymentId: deploymentId)
+    }
+    
+    public convenience init(_ clientHelper: ClientHelper){
+        self.init(clientHelper, deploymentId: zetaPushDefaultConfig.macroDeployementId)
+    }
+    
+    public func genericSubscribe<T: ZPMessage>(verb: String, type: T.Type, callback: @escaping ZPChannelSubscriptionBlock) {
+        
+        let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
+            
+            if let result = messageDict["result"] as? NSDictionary {
+                let zpMessage = T()
+                zpMessage.fromDict(result)
+                
+                callback(zpMessage)
+            }
+            /* TODO Handle Errors
+            if messageDict.object(forKey: "errors") != nil {
+                if let errors = messageDict["errors"] as? NSArray {
+                    if errors.count > 0 {
+                        if let error = errors[0] as? NSDictionary {
+                            let errorCode = error["code"] as? String
+                            let errorMessage = error["message"] as? String
+                            
+                            reject(ZetaPushMacroError.genericError(errorCode: errorCode!, errorMessage: errorMessage!))
+                        } else {
+                            reject(ZetaPushMacroError.unknowError)
+                        }
+                    }
+                }
+            }
+            */
+            
+            
+        }
+        
+        _ = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!))!, block: channelBlockServiceCall)
+        
+    }
 }

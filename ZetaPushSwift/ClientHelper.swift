@@ -12,6 +12,7 @@ import Foundation
     Base class for managing ZetaPush connexion
 */
 
+
 open class ClientHelper : NSObject, CometdClientDelegate{
     
     var sandboxId:String = ""
@@ -146,6 +147,10 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     
     open func setForceSecure(_ isSecure: Bool){
         self.cometdClient!.setForceSecure(isSecure)
+    }
+    
+    open func composeServiceChannel(_ verb: String, deploymentId: String) -> String {
+        return "/service/" + self.sandboxId + "/" + deploymentId + "/" + verb
     }
     
     /*

@@ -132,16 +132,28 @@ open class ZetaPushMacroService : NSObject {
      */
     open func asyncCall(verb:String, parameters:[String:AnyObject]) -> Promise<NSDictionary> {
         return Promise { fulfill, reject in
+            let requestId = UUID().uuidString
             
             let dict:[String:AnyObject] = [
                 "name": verb as AnyObject,
                 "hardFail": false as AnyObject,
-                "parameters": parameters as AnyObject
+                "parameters": parameters as AnyObject,
+                "requestId": requestId as AnyObject
             ]
             
             var sub: Subscription? = nil
             
             let channelBlockMacroCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
+                
+                // Check if the requestId is similar to the one sent
+                if messageDict.object(forKey: "requestId") != nil {
+                    if let msgRequestId = messageDict["requestId"] as? String {
+                        if msgRequestId != requestId {
+                            return
+                        }
+                    }
+                }
+                
                 self.clientHelper?.unsubscribe(sub!)
                 
                 if let result = messageDict["result"] as? NSDictionary {

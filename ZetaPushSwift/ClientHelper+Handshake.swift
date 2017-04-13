@@ -35,6 +35,7 @@ open class AbstractHandshake {
         auth["type"] =  client.getSandboxId() + "." + deploymentId + "." + getAuthType() as AnyObject?
         auth["version"] = getAuthVersion() as AnyObject?
         auth["data"] = getAuthData() as AnyObject?
+        auth["resource"] = client.getResource() as AnyObject?
         return auth
     }
     

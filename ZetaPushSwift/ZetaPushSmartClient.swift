@@ -8,12 +8,22 @@
 
 import Foundation
 
+/*
+  ZetaPush Smart Client
+ 
+  Description: autoconnect with a weak authentication 
+   can use credential from simple authentication
+   automatic reconnection with stored token
+ 
+*/
+
 open class ZetaPushSmartClient: ClientHelper {
     
     var login: String = ""
     var password: String = ""
     var weakDeploymentId = ""
     var simpleDeploymentId = ""
+    var resourceName = ""
     
     public init(sandboxId: String, weakDeploymentId: String, simpleDeploymentId: String){
         
@@ -23,6 +33,8 @@ open class ZetaPushSmartClient: ClientHelper {
         // Get the stored tokens
         let defaults = UserDefaults.standard
         let storedSandboxId = defaults.string(forKey: zetaPushDefaultKeys.sandboxId)
+        
+        
         var stringToken : String = ""
         var stringPublicToken : String = ""
         if (storedSandboxId == sandboxId) {
@@ -35,14 +47,14 @@ open class ZetaPushSmartClient: ClientHelper {
         }
         if (stringPublicToken.characters.count > 0) {
             // The user is weakly authenticated and the token must be present
-            super.init(apiUrl: "https://api.zpush.io", sandboxId: sandboxId, authentication: Authentication.weak(stringToken, deploymentId: weakDeploymentId), resource: "none", forceHttps: false)
+            super.init(apiUrl: zetaPushDefaultConfig.apiUrl, sandboxId: sandboxId, authentication: Authentication.weak(stringToken, deploymentId: weakDeploymentId), resource: "", forceHttps: false)
         } else {
             if (stringToken.characters.count > 0){
                 // The user is strongly (with a simple authent) authenticated and the token is present
-                super.init(apiUrl: "https://api.zpush.io", sandboxId: sandboxId, authentication: Authentication.simple(stringToken, password:"", deploymentId: simpleDeploymentId), resource: "none", forceHttps: false)
+                super.init(apiUrl: zetaPushDefaultConfig.apiUrl, sandboxId: sandboxId, authentication: Authentication.simple(stringToken, password:"", deploymentId: simpleDeploymentId), resource: "", forceHttps: false)
             } else {
                 // The use is not authenticated, we connect him with a weak authent
-                super.init(apiUrl: "https://api.zpush.io", sandboxId: sandboxId, authentication: Authentication.weak("", deploymentId: weakDeploymentId), resource: "none", forceHttps: false)
+                super.init(apiUrl: zetaPushDefaultConfig.apiUrl, sandboxId: sandboxId, authentication: Authentication.weak("", deploymentId: weakDeploymentId), resource: "", forceHttps: false)
             }
         }
         

@@ -14,6 +14,7 @@ enum ZetaPushServiceError: Error {
     case unknowError
 }
 
+
 open class ZetaPushService : NSObject {
     
     var clientHelper: ClientHelper?

@@ -8,6 +8,14 @@
 
 import Foundation
 
+/*
+ ZetaPush Smart Client
+ 
+ Description: autoconnect with a weak authentication
+ can use credential from simple authentication
+ automatic reconnection with stored token
+ 
+ */
 open class ZetaPushWeakClient: ClientHelper {
     
     public init(sandboxId: String, weakDeploymentId: String){
@@ -22,7 +30,7 @@ open class ZetaPushWeakClient: ClientHelper {
             }
         }
         
-        super.init(apiUrl: "https://api.zpush.io", sandboxId: sandboxId, authentication: Authentication.weak(stringToken, deploymentId: weakDeploymentId), resource: "none", forceHttps: false)
+        super.init(apiUrl: zetaPushDefaultConfig.apiUrl, sandboxId: sandboxId, authentication: Authentication.weak(stringToken, deploymentId: weakDeploymentId), resource: "", forceHttps: false)
         
         if (storedSandboxId == sandboxId) {
             self.token = stringToken

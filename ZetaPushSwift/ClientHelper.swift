@@ -58,6 +58,17 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         self.cometdClient = CometdClient()
         super.init()
         
+        // Handle resource
+        let defaults = UserDefaults.standard
+        if resource.characters.count == 0 {
+            if let storedResource = defaults.string(forKey: zetaPushDefaultKeys.resource) {
+                self.resource = storedResource
+            } else {
+                self.resource = ZetaPushUtils.generateResourceName()
+                defaults.set(self.resource, forKey: zetaPushDefaultKeys.resource)
+            }
+        }
+        
         self.cometdClient?.delegate = self
     }
     
@@ -152,6 +163,8 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     open func composeServiceChannel(_ verb: String, deploymentId: String) -> String {
         return "/service/" + self.sandboxId + "/" + deploymentId + "/" + verb
     }
+    
+    
     
     /*
      Must be overriden by ClientHelper descendants

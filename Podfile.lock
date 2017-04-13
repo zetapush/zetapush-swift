@@ -1,15 +1,28 @@
 PODS:
+  - PromiseKit (4.1.7):
+    - PromiseKit/Foundation (= 4.1.7)
+    - PromiseKit/QuartzCore (= 4.1.7)
+    - PromiseKit/UIKit (= 4.1.7)
+  - PromiseKit/CorePromise (4.1.7)
+  - PromiseKit/Foundation (4.1.7):
+    - PromiseKit/CorePromise
+  - PromiseKit/QuartzCore (4.1.7):
+    - PromiseKit/CorePromise
+  - PromiseKit/UIKit (4.1.7):
+    - PromiseKit/CorePromise
   - Starscream (2.0.3)
   - SwiftyJSON (3.1.4)
 
 DEPENDENCIES:
+  - PromiseKit (~> 4.0)
   - Starscream
   - SwiftyJSON
 
 SPEC CHECKSUMS:
+  PromiseKit: 779f2e41faf62d854e7593026ddbcb0bb5c5002d
   Starscream: 3fdd5c277e57cca6b5c406d274e3f34a7c88f2ce
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
 
-PODFILE CHECKSUM: 19fc41eb7480797195f1880bac2d067b43eb283d
+PODFILE CHECKSUM: f2234db47a5e930552458567431e6ce6428001fc
 
 COCOAPODS: 1.0.1

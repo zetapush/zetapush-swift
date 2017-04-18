@@ -10,6 +10,8 @@
 
 import Foundation
 import SwiftyJSON
+import XCGLogger
+
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
@@ -102,7 +104,7 @@ extension CometdClient {
             dict["advice"] = advice as AnyObject?
             
             if let string = JSON(dict).rawString(String.Encoding.utf8, options: []) {
-                print("CometdClient handshake \(string)")
+                self.log.verbose("CometdClient handshake \(string)")
                 self.transport?.writeString("["+string+"]")
             }
         }
@@ -122,6 +124,7 @@ extension CometdClient {
             ]
             
             if let string = JSON(dict).rawString(String.Encoding.utf8, options: []) {
+                self.log.verbose("CometdClient connect \(string)")
                 self.transport?.writeString("["+string+"]")
             }
         }
@@ -134,6 +137,7 @@ extension CometdClient {
         writeOperationQueue.sync { [unowned self] in
             let dict:[String:AnyObject] = [Bayeux.Channel.rawValue: BayeuxChannel.Disconnect.rawValue as AnyObject, Bayeux.ClientId.rawValue: self.cometdClientId! as AnyObject, Bayeux.ConnectionType.rawValue: BayeuxConnection.WebSocket.rawValue as AnyObject]
             if let string = JSON(dict).rawString(String.Encoding.utf8, options: []) {
+                self.log.verbose("CometdClient disconnect \(string)")
                 self.transport?.writeString("["+string+"]")
             }
         }
@@ -147,6 +151,7 @@ extension CometdClient {
         writeOperationQueue.sync { [unowned self] in
             do {
                 let json = try model.jsonString()
+                self.log.verbose("CometdClient subscribe \(json)")
                 
                 self.transport?.writeString("["+json+"]")
                 self.pendingSubscriptions.append(model)
@@ -175,6 +180,7 @@ extension CometdClient {
                 let dict:[String:AnyObject] = [Bayeux.Channel.rawValue: BayeuxChannel.Unsubscibe.rawValue as AnyObject, Bayeux.ClientId.rawValue: clientId as AnyObject, Bayeux.Subscription.rawValue: channel as AnyObject]
                 
                 if let string = JSON(dict).rawString(String.Encoding.utf8, options: []) {
+                    self.log.verbose("CometdClient unsubscribe \(string)")
                     self.transport?.writeString("["+string+"]")
                 }
             }
@@ -199,7 +205,7 @@ extension CometdClient {
                 ]
                 
                 if let string = JSON(dict).rawString(String.Encoding.utf8, options: []) {
-                    print("Cometd: Publish string: \(string)")
+                    self?.log.verbose("CometdClient Publish \(string)")
                     self?.transport?.writeString("["+string+"]")
                 }
             }

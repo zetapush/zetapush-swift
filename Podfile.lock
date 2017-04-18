@@ -1,4 +1,7 @@
 PODS:
+  - ObjcExceptionBridging (1.0.1):
+    - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
+  - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
   - PromiseKit (4.1.7):
     - PromiseKit/Foundation (= 4.1.7)
     - PromiseKit/QuartzCore (= 4.1.7)
@@ -12,17 +15,24 @@ PODS:
     - PromiseKit/CorePromise
   - Starscream (2.0.3)
   - SwiftyJSON (3.1.4)
+  - XCGLogger (5.0.1):
+    - XCGLogger/Core (= 5.0.1)
+  - XCGLogger/Core (5.0.1):
+    - ObjcExceptionBridging
 
 DEPENDENCIES:
   - PromiseKit (~> 4.0)
   - Starscream
   - SwiftyJSON
+  - XCGLogger (~> 5.0.1)
 
 SPEC CHECKSUMS:
+  ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   PromiseKit: 779f2e41faf62d854e7593026ddbcb0bb5c5002d
   Starscream: 3fdd5c277e57cca6b5c406d274e3f34a7c88f2ce
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
+  XCGLogger: 0b43697155d41e4a1b15fc776f319c2141646b09
 
-PODFILE CHECKSUM: f2234db47a5e930552458567431e6ce6428001fc
+PODFILE CHECKSUM: cfbd1734f9556b490d309381e6c6a0e924f1d85b
 
 COCOAPODS: 1.2.1

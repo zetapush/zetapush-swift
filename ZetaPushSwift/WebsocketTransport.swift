@@ -9,15 +9,19 @@
 
 import Foundation
 import Starscream
+import XCGLogger
 
 internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDelegate {
     var urlString:String?
     var webSocket:WebSocket?
     internal weak var delegate:TransportDelegate?
     
-    convenience required internal init(url: String) {
+    let log = XCGLogger(identifier: "websocketLogger", includeDefaultDestinations: true)
+    
+    convenience required internal init(url: String, logLevel: XCGLogger.Level = .severe) {
         self.init()
         self.urlString = url
+        log.setup(level: logLevel)
     }
     
     func openConnection() {
@@ -28,7 +32,7 @@ internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDe
             webSocket.pongDelegate = self
             webSocket.connect()
             
-            print("Cometd: Opening connection with \(String(describing: self.urlString))")
+            log.debug("Cometd: Opening connection with \(String(describing: self.urlString))")
         }
     }
     
@@ -73,7 +77,7 @@ internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDe
     
     // MARK: TODO
     internal func websocketDidReceiveData(socket: WebSocket, data: Data) {
-        print("Cometd: Received data: \(data.count)")
+        log.debug("Cometd: Received data: \(data.count)")
         //self.socket.writeData(data)
     }
     

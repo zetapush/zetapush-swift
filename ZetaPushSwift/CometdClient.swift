@@ -10,6 +10,7 @@
 
 import Foundation
 import SwiftyJSON
+import XCGLogger
 
 // MARK: Subscription State
 public enum CometdSubscriptionState {
@@ -51,10 +52,14 @@ open class CometdClient : TransportDelegate {
         }
     }
     
+    let log = XCGLogger(identifier: "cometdLogger", includeDefaultDestinations: true)
+    
     var connectionInitiated:Bool?
     var messageNumber:UInt32 = 0
     
     var forceSecure:Bool = false
+    
+    var logLevel: XCGLogger.Level = .severe
     
     var queuedSubscriptions = Array<CometdSubscriptionModel>()
     var pendingSubscriptions = Array<CometdSubscriptionModel>()
@@ -89,6 +94,11 @@ open class CometdClient : TransportDelegate {
         pendingSubscriptionSchedule.invalidate()
     }
     
+    open func setLogLevel(logLevel: XCGLogger.Level){
+        self.log.setup(level: logLevel)
+        self.logLevel = logLevel
+    }
+    
     open func configure(url: String, backoffIncrement: Int=1000, maxBackoff: Int=60000, appendMessageTypeToURL: Bool = false){
         
         // Check protocol (only websocket for now)
@@ -110,19 +120,19 @@ open class CometdClient : TransportDelegate {
         
         self.cometdConnected = false;
         
-        self.transport = WebsocketTransport(url: self.cometdURLString!)
+        self.transport = WebsocketTransport(url: self.cometdURLString!, logLevel: self.logLevel)
         self.transport!.delegate = self;
     }
     
     open func connectHandshake(_ handshakeFields:[String:AnyObject]) {
         self.handshakeFields = handshakeFields
-        print("CometdClient handshake")
+        log.debug("CometdClient handshake")
         
         if self.connectionInitiated != true {
             self.transport?.openConnection()
             self.connectionInitiated = true;
         } else {
-            print("Cometd: Connection established")
+            log.debug("Cometd: Connection established")
         }
     }
     

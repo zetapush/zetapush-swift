@@ -15,7 +15,7 @@ extension CometdClient {
     @objc
     func pendingSubscriptionsAction(_ timer: Timer) {
         guard cometdConnected == true else {
-            print("Cometd: Failed to resubscribe to all pending channels, socket disconnected")
+            log.error("Cometd: Failed to resubscribe to all pending channels, socket disconnected")
             
             return
         }

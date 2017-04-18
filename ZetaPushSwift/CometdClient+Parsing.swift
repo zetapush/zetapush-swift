@@ -18,7 +18,9 @@ extension CometdClient {
     func parseCometdMessage(_ messageJSON:JSON) {
         let messageDict = messageJSON[0]
         if let channel = messageDict[Bayeux.Channel.rawValue].string {
-            print("parseCometdMessage", channel, messageDict)
+            log.verbose("parseCometdMessage \(channel)")
+            log.verbose(messageDict)
+            
             // Handle Meta Channels
             if let metaChannel = BayeuxChannel(rawValue: channel) {
                 switch(metaChannel) {
@@ -67,7 +69,7 @@ extension CometdClient {
                             self.openSubscriptions.append(CometdSubscriptionModel(subscriptionUrl: subscription, clientId: cometdClientId))
                             self.delegate?.didSubscribeToChannel(self, channel: subscription)
                         } else {
-                            print("Cometd: Missing subscription for Subscribe")
+                            log.warning("Cometd: Missing subscription for Subscribe")
                         }
                     } else {
                         // Subscribe Failed
@@ -86,7 +88,7 @@ extension CometdClient {
                         _ = removeChannelFromOpenSubscriptions(subscription)
                         self.delegate?.didUnsubscribeFromChannel(self, channel: subscription)
                     } else {
-                        print("Cometd: Missing subscription for Unsubscribe")
+                        log.warning("Cometd: Missing subscription for Unsubscribe")
                     }
                 }
             } else {
@@ -100,7 +102,7 @@ extension CometdClient {
                                 channel.callback!(data as! NSDictionary)
                             }
                         } else {
-                            print("Cometd: Failed to get channel block for : \(channel)")
+                            log.warning("Cometd: Failed to get channel block for : \(channel)")
                         }
                         
                         self.delegate?.messageReceived(
@@ -109,14 +111,14 @@ extension CometdClient {
                             channel: channel
                         )
                     } else {
-                        print("Cometd: For some reason data is nil for channel: \(channel)")
+                        log.warning("Cometd: For some reason data is nil for channel: \(channel)")
                     }
                 } else {
-                    print("Cometd: Weird channel that not been set to subscribed: \(channel)")
+                    log.warning("Cometd: Weird channel that not been set to subscribed: \(channel)")
                 }
             }
         } else {
-            print("Cometd: Missing channel for \(messageDict)")
+            log.warning("Cometd: Missing channel for \(messageDict)")
         }
     }
 }

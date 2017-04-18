@@ -8,6 +8,7 @@
 
 import Foundation
 import PromiseKit
+import XCGLogger
 
 enum ZetaPushServiceError: Error {
     case genericError(errorCode: String, errorMessage: String, errorSource: NSDictionary)
@@ -20,12 +21,16 @@ open class ZetaPushService : NSObject {
     var clientHelper: ClientHelper?
     var deploymentId: String?
     
+    
+    let log = XCGLogger(identifier: "serviceLogger", includeDefaultDestinations: true)
+    
     public init(_ clientHelper: ClientHelper, deploymentId: String){
         self.clientHelper = clientHelper
         self.deploymentId = deploymentId
         
         super.init()
         
+        self.log.setup(level: (self.clientHelper?.getLogLevel())!)
     }
     
     open func subscribe(verb: String, block:ChannelSubscriptionBlock?=nil) -> Subscription{

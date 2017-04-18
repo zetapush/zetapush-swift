@@ -26,6 +26,7 @@ Pod::Spec.new do |s|
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   s.description  = <<-DESC
   Swift client for ZetaPush
+  Allows dev to easily connect to ZetaPush Backend As A Service
                    DESC
 
   s.homepage     = "http://zetapush.com"
@@ -64,7 +65,7 @@ Pod::Spec.new do |s|
   #  the deployment target. You can optionally include the target after the platform.
   #
 
-  s.platform     = :ios
+  s.platform     = :ios, "8.0"
   # s.platform     = :ios, "5.0"
 
   #  When using multiple platforms
@@ -106,7 +107,7 @@ Pod::Spec.new do |s|
   #
 
   # s.resource  = "icon.png"
-  s.resources = "ZetaPushSwift/**/*.{png,jpeg,jpg,storyboard,xib}"
+  # s.resources = "ZetaPushSwift/**/*.{png,jpeg,jpg,storyboard,xib}"
 
   # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
 

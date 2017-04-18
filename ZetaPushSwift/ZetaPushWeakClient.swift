@@ -42,7 +42,7 @@ open class ZetaPushWeakClient: ClientHelper {
     }
     
     override func storeHandshakeToken(_ authenticationDict: NSDictionary){
-        print ("override storeHandshakeToken")
+        log.debug ("override storeHandshakeToken")
         let defaults = UserDefaults.standard
         defaults.set(self.getSandboxId(), forKey: zetaPushDefaultKeys.sandboxId)
         if authenticationDict["token"] != nil {

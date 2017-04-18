@@ -24,7 +24,7 @@ extension CometdClient {
     
     func resubscribeToPendingSubscriptions() {
         if !pendingSubscriptions.isEmpty {
-            print("Cometd: Resubscribing to \(pendingSubscriptions.count) pending subscriptions")
+            log.debug("Cometd: Resubscribing to \(pendingSubscriptions.count) pending subscriptions")
             
             for channel in pendingSubscriptions {
                 _ = removeChannelFromPendingSubscriptions(channel.subscriptionUrl)

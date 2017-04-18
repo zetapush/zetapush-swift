@@ -15,6 +15,7 @@
  */
 import Foundation
 import PromiseKit
+import XCGLogger
 
 enum ZetaPushMacroError: Error {
     case genericError(errorCode: String, errorMessage: String)
@@ -32,11 +33,13 @@ open class ZetaPushMacroService : NSObject {
     
     var channelSubscriptionBlocks = Dictionary<String, Array<Subscription>>()
     
+    let log = XCGLogger(identifier: "macroserviceLogger", includeDefaultDestinations: true)
     
     // Callback for /completed macro channel
     lazy var channelBlockMacroCompleted:ChannelSubscriptionBlock = {(messageDict) -> Void in
         
-        print("ZetaPushMacroService channelBlockMacroCompleted", messageDict, messageDict["name"] as Any)
+        self.log.debug("ZetaPushMacroService channelBlockMacroCompleted")
+        self.log.debug(messageDict)
         
         let macroChannel = self.composeServiceChannel(messageDict["name"] as! String)
         if let result = messageDict["result"] as? NSDictionary {
@@ -50,7 +53,8 @@ open class ZetaPushMacroService : NSObject {
     
     // Callback for /error macro channel
     lazy var channelBlockMacroError:ChannelSubscriptionBlock = {(messageDict) -> Void in
-        print("ZetaPushMacroService channelBlockMacroError", messageDict)
+        self.log.debug("ZetaPushMacroService channelBlockMacroError")
+        self.log.debug(messageDict)
         
         let errorCode = messageDict["code"] as! String
         let errorMessage = messageDict["message"] as! String

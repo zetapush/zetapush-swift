@@ -199,7 +199,7 @@ extension CometdClient {
                 ]
                 
                 if let string = JSON(dict).rawString(String.Encoding.utf8, options: []) {
-                    print("Cometd: Publish string: \(string)")
+                    self?.log.debug("Cometd: Publish string: \(string)")
                     self?.transport?.writeString("["+string+"]")
                 }
             }

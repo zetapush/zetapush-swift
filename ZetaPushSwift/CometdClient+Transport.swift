@@ -14,19 +14,19 @@ import Foundation
 extension CometdClient {
     public func didConnect() {
         self.connectionInitiated = false;
-        print("CometdClient didConnect")
+        log.debug("CometdClient didConnect")
         self.handshake(self.handshakeFields!)
     }
     
     public func didDisconnect(_ error: NSError?) {
-        print("CometdClient didDisconnect")
+        log.debug("CometdClient didDisconnect")
         self.delegate?.disconnectedFromServer(self)
         self.connectionInitiated = false
         self.cometdConnected = false
     }
     
     public func didFailConnection(_ error: NSError?) {
-        print("CometdClient didFailConnection")
+        log.warning("CometdClient didFailConnection")
         self.delegate?.connectionFailed(self)
         self.connectionInitiated = false
         self.cometdConnected = false

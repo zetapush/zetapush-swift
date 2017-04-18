@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import XCGLogger
 
 /*
   ZetaPush Smart Client
@@ -67,7 +68,7 @@ open class ZetaPushSmartClient: ClientHelper {
     }
     
     override func storeHandshakeToken(_ authenticationDict: NSDictionary){
-        print ("override storeHandshakeToken")
+        log.debug("storeHandshakeToken")
         let defaults = UserDefaults.standard
         defaults.set(self.getSandboxId(), forKey: zetaPushDefaultKeys.sandboxId)
         if authenticationDict["token"] != nil {

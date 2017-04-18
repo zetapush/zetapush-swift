@@ -10,6 +10,7 @@
 
 import Foundation
 import SwiftyJSON
+import XCGLogger
 
 // MARK: Subscription State
 public enum CometdSubscriptionState {
@@ -50,6 +51,8 @@ open class CometdClient : TransportDelegate {
             }
         }
     }
+    
+    let log = XCGLogger(identifier: "cometdLogger", includeDefaultDestinations: true)
     
     var connectionInitiated:Bool?
     var messageNumber:UInt32 = 0
@@ -116,13 +119,13 @@ open class CometdClient : TransportDelegate {
     
     open func connectHandshake(_ handshakeFields:[String:AnyObject]) {
         self.handshakeFields = handshakeFields
-        print("CometdClient handshake")
+        log.debug("CometdClient handshake")
         
         if self.connectionInitiated != true {
             self.transport?.openConnection()
             self.connectionInitiated = true;
         } else {
-            print("Cometd: Connection established")
+            log.debug("Cometd: Connection established")
         }
     }
     

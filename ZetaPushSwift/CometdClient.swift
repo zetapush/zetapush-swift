@@ -59,6 +59,8 @@ open class CometdClient : TransportDelegate {
     
     var forceSecure:Bool = false
     
+    var logLevel: XCGLogger.Level = .severe
+    
     var queuedSubscriptions = Array<CometdSubscriptionModel>()
     var pendingSubscriptions = Array<CometdSubscriptionModel>()
     var openSubscriptions = Array<CometdSubscriptionModel>()
@@ -92,6 +94,11 @@ open class CometdClient : TransportDelegate {
         pendingSubscriptionSchedule.invalidate()
     }
     
+    open func setLogLevel(logLevel: XCGLogger.Level){
+        self.log.setup(level: logLevel)
+        self.logLevel = logLevel
+    }
+    
     open func configure(url: String, backoffIncrement: Int=1000, maxBackoff: Int=60000, appendMessageTypeToURL: Bool = false){
         
         // Check protocol (only websocket for now)
@@ -113,7 +120,7 @@ open class CometdClient : TransportDelegate {
         
         self.cometdConnected = false;
         
-        self.transport = WebsocketTransport(url: self.cometdURLString!)
+        self.transport = WebsocketTransport(url: self.cometdURLString!, logLevel: self.logLevel)
         self.transport!.delegate = self;
     }
     

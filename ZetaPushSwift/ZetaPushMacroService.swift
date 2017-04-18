@@ -71,6 +71,8 @@ open class ZetaPushMacroService : NSObject {
         self.deploymentId = deploymentId
         super.init()
         
+        self.log.setup(level: (self.clientHelper?.getLogLevel())!)
+        
         // Subscribe to completed macro channel
         self.macroChannel = "/service/" + self.clientHelper!.getSandboxId() + "/" + self.deploymentId! + "/" + "completed"
         _ = self.clientHelper?.subscribe(self.macroChannel!, block: channelBlockMacroCompleted)

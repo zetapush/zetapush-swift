@@ -26,7 +26,7 @@ open class ZetaPushSmartClient: ClientHelper {
     var simpleDeploymentId = ""
     var resourceName = ""
     
-    public init(sandboxId: String, weakDeploymentId: String, simpleDeploymentId: String){
+    public init(sandboxId: String, weakDeploymentId: String, simpleDeploymentId: String, logLevel: XCGLogger.Level = .severe){
         
         self.weakDeploymentId = weakDeploymentId
         self.simpleDeploymentId = simpleDeploymentId
@@ -48,14 +48,14 @@ open class ZetaPushSmartClient: ClientHelper {
         }
         if (stringPublicToken.characters.count > 0) {
             // The user is weakly authenticated and the token must be present
-            super.init(apiUrl: zetaPushDefaultConfig.apiUrl, sandboxId: sandboxId, authentication: Authentication.weak(stringToken, deploymentId: weakDeploymentId), resource: "", forceHttps: false)
+            super.init(apiUrl: zetaPushDefaultConfig.apiUrl, sandboxId: sandboxId, authentication: Authentication.weak(stringToken, deploymentId: weakDeploymentId), logLevel: logLevel)
         } else {
             if (stringToken.characters.count > 0){
                 // The user is strongly (with a simple authent) authenticated and the token is present
-                super.init(apiUrl: zetaPushDefaultConfig.apiUrl, sandboxId: sandboxId, authentication: Authentication.simple(stringToken, password:"", deploymentId: simpleDeploymentId), resource: "", forceHttps: false)
+                super.init(apiUrl: zetaPushDefaultConfig.apiUrl, sandboxId: sandboxId, authentication: Authentication.simple(stringToken, password:"", deploymentId: simpleDeploymentId), logLevel: logLevel)
             } else {
                 // The use is not authenticated, we connect him with a weak authent
-                super.init(apiUrl: zetaPushDefaultConfig.apiUrl, sandboxId: sandboxId, authentication: Authentication.weak("", deploymentId: weakDeploymentId), resource: "", forceHttps: false)
+                super.init(apiUrl: zetaPushDefaultConfig.apiUrl, sandboxId: sandboxId, authentication: Authentication.weak("", deploymentId: weakDeploymentId), logLevel: logLevel)
             }
         }
         
@@ -63,8 +63,8 @@ open class ZetaPushSmartClient: ClientHelper {
         
     }
     
-    public convenience init(sandboxId: String){
-        self.init(sandboxId: sandboxId, weakDeploymentId: zetaPushDefaultConfig.weakDeploymentId, simpleDeploymentId: zetaPushDefaultConfig.simpleDeploymentId)
+    public convenience init(sandboxId: String, logLevel: XCGLogger.Level = .severe){
+        self.init(sandboxId: sandboxId, weakDeploymentId: zetaPushDefaultConfig.weakDeploymentId, simpleDeploymentId: zetaPushDefaultConfig.simpleDeploymentId, logLevel: logLevel)
     }
     
     override func storeHandshakeToken(_ authenticationDict: NSDictionary){

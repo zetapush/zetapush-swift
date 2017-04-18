@@ -18,9 +18,10 @@ internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDe
     
     let log = XCGLogger(identifier: "websocketLogger", includeDefaultDestinations: true)
     
-    convenience required internal init(url: String) {
+    convenience required internal init(url: String, logLevel: XCGLogger.Level = .severe) {
         self.init()
         self.urlString = url
+        log.setup(level: logLevel)
     }
     
     func openConnection() {

@@ -32,6 +32,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     // Flag used for automatic reconnection
     var wasConnected:Bool = false
     
+    var logLevel: XCGLogger.Level = .severe
     
     fileprivate var authentication: AbstractHandshake?
     var cometdClient: CometdClient?
@@ -41,6 +42,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     open var onConnectionBroken : ((_ client:ClientHelper)->())?
     open var onConnectionClosed : ((_ client:ClientHelper)->())?
     open var onSuccessfulHandshake : ((_ client:ClientHelper)->())?
+    open var onZetaPushClientReady : ((_ client:ClientHelper)->())?
     open var onFailedHandshake : ((_ client:ClientHelper)->())?
     
     
@@ -54,7 +56,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     
     open var onMessageReceived : ((_ client:ClientHelper, _ messageDict : NSDictionary, _ channel:String)->())?
     
-    public init(apiUrl:String, sandboxId:String, authentication: AbstractHandshake, resource: String, forceHttps:Bool? ){
+    public init(apiUrl:String, sandboxId:String, authentication: AbstractHandshake, resource: String = "", logLevel: XCGLogger.Level = .severe ){
         
         self.sandboxId = sandboxId
         self.authentication = authentication
@@ -62,6 +64,9 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         self.apiUrl = apiUrl
         self.cometdClient = CometdClient()
         super.init()
+        
+        self.logLevel = logLevel
+        log.setup(level: logLevel)
         
         // Handle resource
         let defaults = UserDefaults.standard
@@ -114,6 +119,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
                 self.log.debug("ZetaPush selected Server")
                 self.log.debug(self.server)
                 
+                self.cometdClient?.setLogLevel(logLevel: self.logLevel)
                 self.cometdClient?.configure(url: self.server)
                 self.cometdClient?.connectHandshake(self.authentication!.getHandshakeFields(self))
             }
@@ -168,7 +174,14 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         return "/service/" + self.sandboxId + "/" + deploymentId + "/" + verb
     }
     
+    open func getLogLevel() -> XCGLogger.Level {
+        return self.logLevel
+    }
     
+    open func setLogLevel(logLevel: XCGLogger.Level){
+        self.logLevel = logLevel
+        log.setup(level: logLevel)
+    }
     
     /*
      Must be overriden by ClientHelper descendants
@@ -230,7 +243,6 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     open func connectedToServer(_ client: CometdClient) {
         log.debug("ClientHelper Connected to ZetaPush server", userInfo: [tags: "zetapush"])
         onConnectionEstablished?(self)
-        onSuccessfulHandshake?(self)
     }
     
     
@@ -259,7 +271,11 @@ open class ClientHelper : NSObject, CometdClientDelegate{
             for sub in tempArray {
                 _ = self.subscribe(sub.channel, block: sub.callback)
             }
+        } else {
+            onZetaPushClientReady?(self)
         }
+        
+        onSuccessfulHandshake?(self)
         
         firstHandshakeFlag = false
  

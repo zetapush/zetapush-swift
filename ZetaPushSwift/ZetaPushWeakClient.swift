@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import XCGLogger
 
 /*
  ZetaPush Smart Client
@@ -18,7 +19,7 @@ import Foundation
  */
 open class ZetaPushWeakClient: ClientHelper {
     
-    public init(sandboxId: String, weakDeploymentId: String){
+    public init(sandboxId: String, weakDeploymentId: String, logLevel: XCGLogger.Level = .severe){
         
         let defaults = UserDefaults.standard
         let storedSandboxId = defaults.string(forKey: zetaPushDefaultKeys.sandboxId)
@@ -30,15 +31,15 @@ open class ZetaPushWeakClient: ClientHelper {
             }
         }
         
-        super.init(apiUrl: zetaPushDefaultConfig.apiUrl, sandboxId: sandboxId, authentication: Authentication.weak(stringToken, deploymentId: weakDeploymentId), resource: "", forceHttps: false)
+        super.init(apiUrl: zetaPushDefaultConfig.apiUrl, sandboxId: sandboxId, authentication: Authentication.weak(stringToken, deploymentId: weakDeploymentId), logLevel: logLevel)
         
         if (storedSandboxId == sandboxId) {
             self.token = stringToken
         }
     }
     
-    public convenience init(sandboxId: String) {
-        self.init(sandboxId: sandboxId, weakDeploymentId: zetaPushDefaultConfig.weakDeploymentId)
+    public convenience init(sandboxId: String, logLevel: XCGLogger.Level = .severe) {
+        self.init(sandboxId: sandboxId, weakDeploymentId: zetaPushDefaultConfig.weakDeploymentId, logLevel: logLevel)
     }
     
     override func storeHandshakeToken(_ authenticationDict: NSDictionary){

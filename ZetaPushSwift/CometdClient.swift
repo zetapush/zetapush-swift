@@ -44,13 +44,7 @@ open class CometdClient : TransportDelegate {
     
     var transport:WebsocketTransport?
     
-    open internal(set) var cometdConnected:Bool? {
-        didSet {
-            if cometdConnected == false {
-                unsubscribeAllSubscriptions()
-            }
-        }
-    }
+    open var cometdConnected:Bool?
     
     let log = XCGLogger(identifier: "cometdLogger", includeDefaultDestinations: true)
     

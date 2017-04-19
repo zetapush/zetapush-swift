@@ -10,7 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 You must have [Cocoapods](https://cocoapods.org/) installed and running
 
 ```
-gem install cocoapods
+sudo gem install cocoapods
 ```
 
 ### Installing
@@ -56,7 +56,7 @@ You must have an account on [ZetaPush](https://zetapush.com) and a valid Sandbox
 
 For the examples above, you must have deployed an authentication ( [Weak](https://ref.zpush.io/#it_weak) at least) and an [Echo](https://ref.zpush.io/#it_echo) service
 
-You can read the [full documentation](https://doc.zetapush.com/how/introduction/) for further information
+You can read the [full documentation](https://doc.zetapush.com/how/introduction/) for more information
 
 ## Code your first client
 
@@ -90,7 +90,7 @@ class ViewController: UIViewController {
 
 That's it. You're connected!
 
-To verify that you're really connected, let's add a callback to be warn when the connection is established.
+To verify that you're really connected, let's add a callback to be warned when the connection is established.
 
 ```swift
 import UIKit
@@ -124,7 +124,7 @@ Now we can call a useless Echo Service that will "echo" ie send back everything 
 
 If you're not familiar with the publish-subscribe paradigm, you can get more information on our [documentation website](https://doc.zetapush.com/how/principles/)
 
-To summarize, when you send a message to ZetaPush (Publish), you get the response only if you've have previously asked for if (Subscribe).
+To summarize, when you send a message to ZetaPush (Publish), you get the response only if you've have previously asked for it (Subscribe).
 
 For the Echo service, you publish a message on the verb "echo" and you get the response on the verb "echo". The [reference site](https://ref.zpush.io/#it_echo) describe all the verb you can publish and the corresponding subscription verb.
 
@@ -137,12 +137,18 @@ import ZetaPushSwift
 class ViewController: UIViewController {
 
     let zetaPushWeakClient:ZetaPushWeakClient = ZetaPushWeakClient(sandboxId: "YOUR_SANDBOX_ID", weakDeploymentId: "YOUR_WEAK_DEPLOYMENT_ID")
+    
+    // Declare a new service
+    var zetaPushServiceEcho : ZetaPushService?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Callback fired when a successful handshake occurs
+        zetaPushWeakClient.onSuccessfulHandshake = onSuccessfulHandshake
+
         // Create an echo service with the corresponding DeploymentId
-        zetaPushServiceEcho = ZetaPushService(zetaPushWeakClient, deploymentId: "pQSH")
+        zetaPushServiceEcho = ZetaPushService(zetaPushWeakClient, deploymentId: "YOUR_ECHO_DEPLOYMENT_ID")
 
         // Subscribe to the echo verb
         _ = zetaPushServiceEcho?.subscribe(verb: "echo", block: { (messageDict) in
@@ -156,15 +162,142 @@ class ViewController: UIViewController {
     func onSuccessfulHandshake(_ client:ClientHelper){
         // The connection to ZetaPush is a success
         print("ViewController SuccessfulHandshake")
-        
-        // Let's call our Echo service
-        zetaPushServiceEcho?.publish(verb: "echo", parameters: ["message": "Hello World" as NSObject])
+    }
+
+    // Just call the echo service when we click on a button
+    @IBAction func OnMyFirstTestDown(_ sender: Any) {
+        zetaPushServiceEcho?.publish(verb: "echo", parameters: ["hello": "world" as NSObject])
     }
 
 }
 
 ```
 
-That's it, you've called your fist ZetaPush service
+That's it, you've called your fist ZetaPush service.
 
+Remenber that a lot of services are available right out of the box on ZetaPush. You can view a full description on our [reference website](https://ref.zpush.io)
 
+## Much more power with Macros 
+
+### ZMS overview
+
+You can read an overview of ZMS (ZetaPush Macro Scripts) on our [documentation website](https://doc.zetapush.com/how/zms-language/introduction/)
+
+You can also follow the [QuickStart](https://doc.zetapush.com/quickstart/) to install the minimum software to create your first macro.
+
+### Our first macro
+
+Les create a simple macro with Eclipe. This macro is the default one when you create a new project (with a return on channel __selfName).
+
+```
+/**
+* Takes a message as input, and returns it, with a server message
+*/
+macroscript welcome(/** message from the client */ string message = "Hello") {
+	// ...
+} return {clientMessage : message, serverMessage : WELCOME_MESSAGE} on channel __selfName
+
+```
+
+Now, let's call it in our iOS project. There's two way to call a macro: with a publish-subscribe style or with a promise.
+
+### Call a macro with Publish-Subscribe
+
+Back to code !
+
+```swift
+import UIKit
+import ZetaPushSwift
+
+class ViewController: UIViewController {
+
+    let zetaPushWeakClient:ZetaPushWeakClient = ZetaPushWeakClient(sandboxId: "YOUR_SANDBOX_ID", weakDeploymentId: "YOUR_WEAK_DEPLOYMENT_ID")
+
+    // Declare a new Macro Service
+    var zetaPushMacroService: ZetaPushMacroService?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Callback fired when a successful handshake occurs
+        zetaPushWeakClient.onSuccessfulHandshake = onSuccessfulHandshake
+
+        // Create a new Macro Service (with default deployementId: "macro_0")
+        zetaPushMacroService = ZetaPushMacroService(zetaPushWeakClient)
+
+        // Subscribe to the welcome verb
+        _ = zetaPushMacroService?.subscribe(verb: "welcome", block: { (messageDic) in
+            print("ViewController zetaPushMacroService?.subscribe", messageDic)
+        })
+
+        // Connect to ZetaPush
+        zetaPushWeakClient.connect()
+    }
+
+    func onSuccessfulHandshake(_ client:ClientHelper){
+        // The connection to ZetaPush is a success
+        print("ViewController SuccessfulHandshake")
+    }
+
+    // Just call the macro service when we click on a button
+    @IBAction func OnMyFirstTestDown(_ sender: Any) {
+        zetaPushMacroService?.call(verb: "welcome", parameters: ["message": "hello world" as NSObject])
+    }
+
+}
+```
+
+### Call a macro with a promise
+
+Promise a really usefull in asynchronious macro call. For more information you can read more about promise on [wikipedia](https://en.wikipedia.org/wiki/Futures_and_promises)
+
+With ZetaPush IOs SDK, you can call a macro in a "nearly" synchronous way thanks to promises. 
+
+```swift
+import UIKit
+import ZetaPushSwift
+
+class ViewController: UIViewController {
+
+    let zetaPushWeakClient:ZetaPushWeakClient = ZetaPushWeakClient(sandboxId: "YOUR_SANDBOX_ID", weakDeploymentId: "YOUR_WEAK_DEPLOYMENT_ID")
+
+    // Declare a new Macro Service
+    var zetaPushMacroService: ZetaPushMacroService?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Callback fired when a successful handshake occurs
+        zetaPushWeakClient.onSuccessfulHandshake = onSuccessfulHandshake
+
+        // Create a new Macro Service (with default deployementId: "macro_0")
+        zetaPushMacroService = ZetaPushMacroService(zetaPushWeakClient)
+
+        // Connect to ZetaPush
+        zetaPushWeakClient.connect()
+    }
+
+    func onSuccessfulHandshake(_ client:ClientHelper){
+        // The connection to ZetaPush is a success
+        print("ViewController SuccessfulHandshake")
+    }
+
+    // Just call the macro service when we click on a button
+    @IBAction func OnMyFirstTestDown(_ sender: Any) {
+        zetaPushMacroService?.asyncCall(verb: "welcome", parameters: ["message": "hello world" as NSObject])
+            .then{ result in
+               print ("asyncCall result", result)
+            }
+            .catch { error in
+                print ("asyncCall error", error)
+            }
+    }
+
+}
+```
+
+That's it, you are able to call a service and a macro from ZetaPush. 
+
+## Further documentation
+
+TBD

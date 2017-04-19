@@ -66,4 +66,12 @@ open class ZetaPushUtils {
         
         return randomString
     }
+    
+    class func getStringIfExistsFromNSDictionnary(key: String, dict: NSDictionary) -> String {
+        var result = ""
+        if dict.object(forKey: key) != nil {
+            result = dict.value(forKey: key) as! String
+        }
+        return result
+    }
 }

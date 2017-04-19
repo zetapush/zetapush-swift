@@ -56,9 +56,10 @@ open class ZetaPushMacroService : NSObject {
         self.log.debug("ZetaPushMacroService channelBlockMacroError")
         self.log.debug(messageDict)
         
-        let errorCode = messageDict["code"] as! String
-        let errorMessage = messageDict["message"] as! String
-        let errorLocation = messageDict["location"] as! String
+        let errorCode = ZetaPushUtils.getStringIfExistsFromNSDictionnary(key: "code", dict: messageDict)
+        let errorMessage = ZetaPushUtils.getStringIfExistsFromNSDictionnary(key: "message", dict: messageDict)
+        let errorLocation = ZetaPushUtils.getStringIfExistsFromNSDictionnary(key: "location", dict: messageDict)
+        
         let source: AnyObject = messageDict["source"] as AnyObject
         let data: AnyObject = source["data"] as AnyObject
         let macroName = data["name"] as! String
@@ -81,10 +82,10 @@ open class ZetaPushMacroService : NSObject {
         _ = self.clientHelper?.subscribe(self.macroChannelError!, block: channelBlockMacroError)
         
         self.clientHelper?.onDidSubscribeToChannel = {client, channel in
-            print("ZetaPushMacroService zetaPushClient.onDidSubscribeToChannel", channel)
+            self.log.debug("ZetaPushMacroService zetaPushClient.onDidSubscribeToChannel \(channel)")
         }
         self.clientHelper?.onDidUnsubscribeToChannel = {client, channel in
-            print("ZetaPushMacroService zetaPushClient.onDidUnsubscribeToChannel", channel)
+            self.log.debug("ZetaPushMacroService zetaPushClient.onDidUnsubscribeToChannel \(channel)")
         }
     }
     

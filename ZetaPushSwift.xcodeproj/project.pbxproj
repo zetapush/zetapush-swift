@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		35DE6ECD1EA8A1DE00E26BC1 /* ZetaPushMacroPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE6ECC1EA8A1DE00E26BC1 /* ZetaPushMacroPublisher.swift */; };
+		35DE6ECF1EA8A21900E26BC1 /* ZetaPushServicePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE6ECE1EA8A21900E26BC1 /* ZetaPushServicePublisher.swift */; };
+		35DE6ED51EAE385200E26BC1 /* ZetaPushMacroListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE6ED41EAE385200E26BC1 /* ZetaPushMacroListener.swift */; };
+		35DE6ED71EAE386200E26BC1 /* ZetaPushServiceListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE6ED61EAE386200E26BC1 /* ZetaPushServiceListener.swift */; };
 		8A2922FA0830C9E8F8135C5A /* Pods_ZetaPushSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1749803BD13F37ED0A8AEB45 /* Pods_ZetaPushSwift.framework */; };
 		C53F8E491E93E83700D5C62C /* ZetaPushSmartClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53F8E481E93E83700D5C62C /* ZetaPushSmartClient.swift */; };
 		C53F8E4B1E93E86D00D5C62C /* ZetaPushWeakClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53F8E4A1E93E86D00D5C62C /* ZetaPushWeakClient.swift */; };
@@ -35,6 +39,10 @@
 
 /* Begin PBXFileReference section */
 		1749803BD13F37ED0A8AEB45 /* Pods_ZetaPushSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZetaPushSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		35DE6ECC1EA8A1DE00E26BC1 /* ZetaPushMacroPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushMacroPublisher.swift; sourceTree = "<group>"; };
+		35DE6ECE1EA8A21900E26BC1 /* ZetaPushServicePublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushServicePublisher.swift; sourceTree = "<group>"; };
+		35DE6ED41EAE385200E26BC1 /* ZetaPushMacroListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushMacroListener.swift; sourceTree = "<group>"; };
+		35DE6ED61EAE386200E26BC1 /* ZetaPushServiceListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushServiceListener.swift; sourceTree = "<group>"; };
 		623B68CCE3F4C486F2BB54D4 /* Pods-ZetaPushSwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZetaPushSwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZetaPushSwift/Pods-ZetaPushSwift.release.xcconfig"; sourceTree = "<group>"; };
 		C53F8E481E93E83700D5C62C /* ZetaPushSmartClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushSmartClient.swift; sourceTree = "<group>"; };
 		C53F8E4A1E93E86D00D5C62C /* ZetaPushWeakClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushWeakClient.swift; sourceTree = "<group>"; };
@@ -104,6 +112,10 @@
 				C53F8E4A1E93E86D00D5C62C /* ZetaPushWeakClient.swift */,
 				C53F8E481E93E83700D5C62C /* ZetaPushSmartClient.swift */,
 				C53F8E511E93F8F300D5C62C /* ZetaPushService.swift */,
+				35DE6ECC1EA8A1DE00E26BC1 /* ZetaPushMacroPublisher.swift */,
+				35DE6ECE1EA8A21900E26BC1 /* ZetaPushServicePublisher.swift */,
+				35DE6ED41EAE385200E26BC1 /* ZetaPushMacroListener.swift */,
+				35DE6ED61EAE386200E26BC1 /* ZetaPushServiceListener.swift */,
 			);
 			name = ZetaPush;
 			sourceTree = "<group>";
@@ -268,6 +280,7 @@
 				C5896E731E841EEF0037800F /* CometdClient+Action.swift in Sources */,
 				C5896E7B1E841F7F0037800F /* CometdClient+Subscription.swift in Sources */,
 				C5896E751E841F0A0037800F /* CometdClient+Bayeux.swift in Sources */,
+				35DE6ED71EAE386200E26BC1 /* ZetaPushServiceListener.swift in Sources */,
 				C5896E811E841FE10037800F /* CometdSubscriptionModel.swift in Sources */,
 				C5896E771E841F2C0037800F /* CometdClient+Helper.swift in Sources */,
 				C5896E6D1E841DFE0037800F /* StringExtensions.swift in Sources */,
@@ -275,6 +288,7 @@
 				C5F9C0D01E8D2E47000B8ECF /* ConnectionStatusDelegate.swift in Sources */,
 				C5896E6F1E841E350037800F /* NsError+Helper.swift in Sources */,
 				C5896E711E841EBE0037800F /* CometdClient.swift in Sources */,
+				35DE6ECD1EA8A1DE00E26BC1 /* ZetaPushMacroPublisher.swift in Sources */,
 				C5896E7F1E841FB90037800F /* CometdClientDelegate.swift in Sources */,
 				C58107F81E8A8695008266F0 /* ClientHelper.swift in Sources */,
 				C5896E681E841D190037800F /* Transport.swift in Sources */,
@@ -284,8 +298,10 @@
 				C5896E6A1E841D450037800F /* WebsocketTransport.swift in Sources */,
 				C58107FA1E8A8695008266F0 /* ZetaPushClient.swift in Sources */,
 				C58107F91E8A8695008266F0 /* ClientHelper+Handshake.swift in Sources */,
+				35DE6ECF1EA8A21900E26BC1 /* ZetaPushServicePublisher.swift in Sources */,
 				C5F9C0CF1E8D2E47000B8ECF /* ZetaPushServiceDelegate.swift in Sources */,
 				C53F8E4D1E93E88E00D5C62C /* ZetaPushMacroService.swift in Sources */,
+				35DE6ED51EAE385200E26BC1 /* ZetaPushMacroListener.swift in Sources */,
 				C5896E7D1E841F9A0037800F /* CometdClient+Transport.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

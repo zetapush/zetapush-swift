@@ -9,10 +9,21 @@
 import Foundation
 import PromiseKit
 import XCGLogger
+import Gloss
 
-enum ZetaPushServiceError: Error {
+public enum ZetaPushServiceError: Error {
     case genericError(errorCode: String, errorMessage: String, errorSource: NSDictionary)
     case unknowError
+    case decodingError
+    
+    static func genericFromDictionnary(_ messageDict: NSDictionary) -> ZetaPushServiceError {
+        
+        let errorCode = ZetaPushUtils.getStringIfExistsFromNSDictionnary(key: "code", dict: messageDict)
+        let errorMessage = ZetaPushUtils.getStringIfExistsFromNSDictionnary(key: "message", dict: messageDict)
+        let errorSource = ZetaPushUtils.getNSDictionnaryIfExistsFromNSDictionnary(key: "source", dict: messageDict)
+        
+        return ZetaPushServiceError.genericError(errorCode: errorCode, errorMessage: errorMessage, errorSource: errorSource!)
+    }
 }
 
 
@@ -20,7 +31,6 @@ open class ZetaPushService : NSObject {
     
     var clientHelper: ClientHelper?
     var deploymentId: String?
-    
     
     let log = XCGLogger(identifier: "serviceLogger", includeDefaultDestinations: true)
     
@@ -67,12 +77,7 @@ open class ZetaPushService : NSObject {
                 self.clientHelper?.unsubscribe(sub!)
                 self.clientHelper?.unsubscribe(subError!)
                 
-                
-                let errorCode = messageDict["code"] as? String
-                let errorMessage = messageDict["message"] as? String
-                let errorSource = messageDict["source"] as? NSDictionary
-                
-                reject(ZetaPushServiceError.genericError(errorCode: errorCode!, errorMessage: errorMessage!, errorSource: errorSource!))
+                reject(ZetaPushServiceError.genericFromDictionnary(messageDict))
                 
             }
             
@@ -83,7 +88,7 @@ open class ZetaPushService : NSObject {
         }
     }
     
-    open func asyncPublishGeneric<T : ZPMessage, U: ZPMessage>(verb:String, parameters:T) -> Promise<U> {
+    open func asyncPublishGeneric<T : Glossy, U: Glossy>(verb:String, parameters:T) -> Promise<U> {
         return Promise { fulfill, reject in
             
             var sub: Subscription? = nil
@@ -93,9 +98,10 @@ open class ZetaPushService : NSObject {
                 self.clientHelper?.unsubscribe(sub!)
                 self.clientHelper?.unsubscribe(subError!)
                 
-                let zpMessage = U()
-                zpMessage.fromDict(messageDict)
-
+                guard let zpMessage = U(json: messageDict as! JSON) else {
+                    reject(ZetaPushServiceError.decodingError)
+                    return
+                }
                 fulfill(zpMessage)
                 
             }
@@ -104,46 +110,20 @@ open class ZetaPushService : NSObject {
                 self.clientHelper?.unsubscribe(sub!)
                 self.clientHelper?.unsubscribe(subError!)
                 
-                
-                let errorCode = messageDict["code"] as? String
-                let errorMessage = messageDict["message"] as? String
-                let errorSource = messageDict["source"] as? NSDictionary
-                
-                reject(ZetaPushServiceError.genericError(errorCode: errorCode!, errorMessage: errorMessage!, errorSource: errorSource!))
+                reject(ZetaPushServiceError.genericFromDictionnary(messageDict))
                 
             }
             
             sub = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.deploymentId!))!, block: channelBlockServiceCall)
             subError = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel("error", deploymentId: self.deploymentId!))!, block: channelBlockServiceError)
-            let param = parameters.toDict() as! [String: AnyObject]
+            let param = parameters.toJSON()! as [String: AnyObject]
             self.clientHelper?.publish((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.deploymentId!))!, message: param)
         }
     }
+    
+    open func publishGeneric<T: Glossy>(verb:String, parameters:T) {
+        clientHelper?.publish((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.deploymentId!))!, message: parameters.toJSON()! as [String:AnyObject])
+    }
 }
 
-open class ZetaPushServicePublisher{
-    
-    var clientHelper: ClientHelper?
-    public var zetaPushService: ZetaPushService
-    
-    public init(_ clientHelper: ClientHelper, deploymentId: String){
-        self.clientHelper = clientHelper
-        self.zetaPushService = ZetaPushService(clientHelper, deploymentId: deploymentId)
-    }
-    
-    public func genericSubscribe<T: ZPMessage>(verb: String, type: T.Type, callback: @escaping ZPChannelSubscriptionBlock) {
-    
-        let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
-    
-            let zpMessage = T()
-            zpMessage.fromDict(messageDict)
-    
-            callback(zpMessage)
-    
-        }
-        
-        _ = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushService.deploymentId!))!, block: channelBlockServiceCall)
-    
-    
-    }
-}
+

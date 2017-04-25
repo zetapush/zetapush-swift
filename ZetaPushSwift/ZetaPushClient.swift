@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Gloss
 
 struct zetaPushDefaultConfig {
     static let apiUrl = "https://api.zpush.io"
@@ -22,7 +23,11 @@ struct zetaPushDefaultKeys{
     static let resource = "zetapush.resource"
 }
 
-public typealias ZPChannelSubscriptionBlock = (ZPMessage) -> Void
+public typealias ZPChannelSubscriptionBlock = (Glossy) -> Void
+
+public typealias ZPMacroServiceErrorBlock = (_ zetaPushMacroService : ZetaPushMacroService, _ zetapushMacroError : ZetaPushMacroError)-> Void
+
+public typealias ZPServiceErrorBlock = (_ zetaPushService : ZetaPushService, _ zetapushServiceError : ZetaPushServiceError)-> Void
 
 /*
  Generic (useless) client for ZetaPush
@@ -50,6 +55,7 @@ open class ZPMessage {
     
 }
 
+
 open class ZetaPushUtils {
     class func generateResourceName() -> String {
         
@@ -73,5 +79,13 @@ open class ZetaPushUtils {
             result = dict.value(forKey: key) as! String
         }
         return result
+    }
+    
+    class func getNSDictionnaryIfExistsFromNSDictionnary(key: String, dict: NSDictionary) -> NSDictionary? {
+        if dict.object(forKey: key) != nil {
+            return dict.value(forKey: key) as? NSDictionary
+        } else {
+            return nil
+        }
     }
 }

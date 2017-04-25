@@ -298,6 +298,6 @@ class ViewController: UIViewController {
 
 That's it, you are able to call a service and a macro from ZetaPush. 
 
-## Further documentation
+## Generics with ZetaPush
 
 TBD

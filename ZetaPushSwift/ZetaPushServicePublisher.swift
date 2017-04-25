@@ -7,3 +7,17 @@
 //
 
 import Foundation
+import Gloss
+
+open class ZetaPushServicePublisher{
+    
+    var clientHelper: ClientHelper?
+    public var zetaPushService: ZetaPushService
+    
+    public init(_ clientHelper: ClientHelper, deploymentId: String){
+        self.clientHelper = clientHelper
+        self.zetaPushService = ZetaPushService(clientHelper, deploymentId: deploymentId)
+    }
+    
+}
+

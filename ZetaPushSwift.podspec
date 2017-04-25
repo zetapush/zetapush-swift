@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "ZetaPushSwift"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "Swift client for ZetaPush"
 
   # This description is used to generate tags and improve search results.
@@ -137,4 +137,5 @@ Pod::Spec.new do |s|
   s.dependency "SwiftyJSON", "~> 3.1"
   s.dependency "PromiseKit", "~> 4.0"
   s.dependency "XCGLogger", "~> 5.0"
+  s.dependency "Gloss", "~> 1.2"
 end

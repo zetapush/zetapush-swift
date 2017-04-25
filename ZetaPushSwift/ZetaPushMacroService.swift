@@ -16,15 +16,32 @@
 import Foundation
 import PromiseKit
 import XCGLogger
+import Gloss
 
-enum ZetaPushMacroError: Error {
-    case genericError(errorCode: String, errorMessage: String)
+public enum ZetaPushMacroError: Error {
+    case genericError(macroName: String, errorMessage: String, errorCode: String, errorLocation: String)
     case unknowError
+    case decodingError
+    
+    static func genericFromDictionnary(_ messageDict: NSDictionary) -> ZetaPushMacroError {
+        
+        let errorCode = ZetaPushUtils.getStringIfExistsFromNSDictionnary(key: "code", dict: messageDict)
+        let errorMessage = ZetaPushUtils.getStringIfExistsFromNSDictionnary(key: "message", dict: messageDict)
+        let errorLocation = ZetaPushUtils.getStringIfExistsFromNSDictionnary(key: "location", dict: messageDict)
+        var macroName = ""
+        if messageDict.object(forKey: "source") != nil {
+            let source: AnyObject = messageDict["source"] as AnyObject
+            let data: AnyObject = source["data"] as AnyObject
+            macroName = data["name"] as! String
+        }
+            
+        return ZetaPushMacroError.genericError(macroName: macroName, errorMessage: errorMessage, errorCode: errorCode, errorLocation: errorLocation)
+    }
 }
 
 open class ZetaPushMacroService : NSObject {
     
-    open var onMacroError : ((_ zetaPushMacroService : ZetaPushMacroService, _ macroName: String, _ errorMessage : String, _ errorCode : String, _ errorLocation : String)->())?
+    open var onMacroError : ZPMacroServiceErrorBlock?
     
     var clientHelper: ClientHelper?
     var deploymentId: String?
@@ -56,15 +73,7 @@ open class ZetaPushMacroService : NSObject {
         self.log.debug("ZetaPushMacroService channelBlockMacroError")
         self.log.debug(messageDict)
         
-        let errorCode = ZetaPushUtils.getStringIfExistsFromNSDictionnary(key: "code", dict: messageDict)
-        let errorMessage = ZetaPushUtils.getStringIfExistsFromNSDictionnary(key: "message", dict: messageDict)
-        let errorLocation = ZetaPushUtils.getStringIfExistsFromNSDictionnary(key: "location", dict: messageDict)
-        
-        let source: AnyObject = messageDict["source"] as AnyObject
-        let data: AnyObject = source["data"] as AnyObject
-        let macroName = data["name"] as! String
-        
-        self.onMacroError?(self, macroName, errorMessage, errorCode, errorLocation)
+        self.onMacroError?(self, ZetaPushMacroError.genericFromDictionnary(messageDict))
     }
     
     public init(_ clientHelper: ClientHelper, deploymentId: String){
@@ -170,12 +179,9 @@ open class ZetaPushMacroService : NSObject {
                     if let errors = messageDict["errors"] as? NSArray {
                         if errors.count > 0 {
                              if let error = errors[0] as? NSDictionary {
-                             let errorCode = error["code"] as? String
-                             let errorMessage = error["message"] as? String
-                             
-                             reject(ZetaPushMacroError.genericError(errorCode: errorCode!, errorMessage: errorMessage!))
+                                reject(ZetaPushMacroError.genericFromDictionnary(error))
                              } else {
-                             reject(ZetaPushMacroError.unknowError)
+                                reject(ZetaPushMacroError.unknowError)
                              }
                         }
                     }
@@ -190,7 +196,7 @@ open class ZetaPushMacroService : NSObject {
         }
     }
     
-    open func asyncCallGeneric<T : ZPMessage, U: ZPMessage>(verb:String, parameters:T) -> Promise<U> {
+    open func asyncCallGeneric<T : Glossy, U: Glossy>(verb:String, parameters:T) -> Promise<U> {
         return Promise { fulfill, reject in
             
             let requestId = UUID().uuidString
@@ -198,7 +204,7 @@ open class ZetaPushMacroService : NSObject {
             let dict:[String:AnyObject] = [
                 "name": verb as AnyObject,
                 "hardFail": false as AnyObject,
-                "parameters": parameters.toDict(),
+                "parameters": parameters.toJSON() as AnyObject,
                 "requestId": requestId as AnyObject
             ]
             
@@ -218,8 +224,12 @@ open class ZetaPushMacroService : NSObject {
                 
                 if let result = messageDict["result"] as? NSDictionary {
                     
-                    let zpMessage = U()
-                    zpMessage.fromDict(result)
+                    guard let zpMessage = U(json: result as! JSON) else {
+                        
+                        reject(ZetaPushMacroError.decodingError)
+                        
+                        return
+                    }
                     
                     fulfill(zpMessage)
                 }
@@ -227,10 +237,7 @@ open class ZetaPushMacroService : NSObject {
                     if let errors = messageDict["errors"] as? NSArray {
                         if errors.count > 0 {
                             if let error = errors[0] as? NSDictionary {
-                                let errorCode = error["code"] as? String
-                                let errorMessage = error["message"] as? String
-                                
-                                reject(ZetaPushMacroError.genericError(errorCode: errorCode!, errorMessage: errorMessage!))
+                                reject(ZetaPushMacroError.genericFromDictionnary(error))
                             } else {
                                 reject(ZetaPushMacroError.unknowError)
                             }
@@ -247,53 +254,15 @@ open class ZetaPushMacroService : NSObject {
         }
     }
     
+    open func callGeneric<T: Glossy>(verb:String, parameters:T) {
+        let dict:[String:AnyObject] = [
+            "name": verb as AnyObject,
+            "hardFail": true as AnyObject,
+            "parameters": parameters.toJSON() as AnyObject
+        ]
+        self.clientHelper?.publish(composeServiceChannel("call"), message: dict)
+    }
+    
 }
 
-open class ZetaPushMacroPublisher{
-    
-    var clientHelper: ClientHelper?
-    public var zetaPushMacroService: ZetaPushMacroService
-    
-    public init(_ clientHelper: ClientHelper, deploymentId: String){
-        self.clientHelper = clientHelper
-        self.zetaPushMacroService = ZetaPushMacroService(clientHelper, deploymentId: deploymentId)
-    }
-    
-    public convenience init(_ clientHelper: ClientHelper){
-        self.init(clientHelper, deploymentId: zetaPushDefaultConfig.macroDeployementId)
-    }
-    
-    public func genericSubscribe<T: ZPMessage>(verb: String, type: T.Type, callback: @escaping ZPChannelSubscriptionBlock) {
-        
-        let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
-            
-            if let result = messageDict["result"] as? NSDictionary {
-                let zpMessage = T()
-                zpMessage.fromDict(result)
-                
-                callback(zpMessage)
-            }
-            /* TODO Handle Errors
-            if messageDict.object(forKey: "errors") != nil {
-                if let errors = messageDict["errors"] as? NSArray {
-                    if errors.count > 0 {
-                        if let error = errors[0] as? NSDictionary {
-                            let errorCode = error["code"] as? String
-                            let errorMessage = error["message"] as? String
-                            
-                            reject(ZetaPushMacroError.genericError(errorCode: errorCode!, errorMessage: errorMessage!))
-                        } else {
-                            reject(ZetaPushMacroError.unknowError)
-                        }
-                    }
-                }
-            }
-            */
-            
-            
-        }
-        
-        _ = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!))!, block: channelBlockServiceCall)
-        
-    }
-}
+

@@ -7,3 +7,21 @@
 //
 
 import Foundation
+import Gloss
+
+open class ZetaPushMacroPublisher{
+    
+    var clientHelper: ClientHelper?
+    public var zetaPushMacroService: ZetaPushMacroService
+    
+    public init(_ clientHelper: ClientHelper, deploymentId: String){
+        self.clientHelper = clientHelper
+        self.zetaPushMacroService = ZetaPushMacroService(clientHelper, deploymentId: deploymentId)
+    }
+    
+    public convenience init(_ clientHelper: ClientHelper){
+        self.init(clientHelper, deploymentId: zetaPushDefaultConfig.macroDeployementId)
+    }
+
+}
+

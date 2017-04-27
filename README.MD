@@ -1,5 +1,8 @@
 # Swift client for ZetaPush
 
+[![Version](https://img.shields.io/cocoapods/v/ZetaPushSwift.svg?style=flat)](http://cocoapods.org/pods/ZetaPushSwift)
+[![License](https://img.shields.io/cocoapods/l/ZetaPushSwift.svg?style=flat)](http://cocoapods.org/pods/ZetaPushSwift)
+[![Platform](https://img.shields.io/cocoapods/p/ZetaPushSwift.svg?style=flat)](http://cocoapods.org/pods/ZetaPushSwift)
 
 ## Getting Started
 

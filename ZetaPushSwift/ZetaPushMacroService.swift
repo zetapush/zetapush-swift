@@ -263,6 +263,23 @@ open class ZetaPushMacroService : NSObject {
         self.clientHelper?.publish(composeServiceChannel("call"), message: dict)
     }
     
+    open func callGeneric(verb:String) {
+        let dict:[String:AnyObject] = [
+            "name": verb as AnyObject,
+            "hardFail": true as AnyObject
+        ]
+        self.clientHelper?.publish(composeServiceChannel("call"), message: dict)
+    }
+    
+    open func callGeneric(verb:String, parameters:NSDictionary) {
+        let dict:[String:AnyObject] = [
+            "name": verb as AnyObject,
+            "hardFail": true as AnyObject,
+            "parameters": parameters
+        ]
+        self.clientHelper?.publish(composeServiceChannel("call"), message: dict)
+    }
+    
 }
 
 

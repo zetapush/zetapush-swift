@@ -9,6 +9,10 @@
 import Foundation
 import Gloss
 
+/*
+ Class used as a base class for specific ServicePublisher
+ 
+ */
 open class ZetaPushServicePublisher{
     
     var clientHelper: ClientHelper?

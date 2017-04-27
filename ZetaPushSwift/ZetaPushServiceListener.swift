@@ -21,6 +21,7 @@ open class ZetaPushServiceListener{
         self.onServiceError?(self.zetaPushService, ZetaPushServiceError.genericFromDictionnary(messageDict))
     }
     
+    // Must be overriden by descendants
     open func register(){}
     
     public init(_ clientHelper: ClientHelper, deploymentId: String){
@@ -32,7 +33,9 @@ open class ZetaPushServiceListener{
         
         self.register()
     }
-    
+    /*
+     Generic Subscribe with a Generic parameter
+     */
     public func genericSubscribe<T: Glossy>(verb: String, callback: @escaping (T)->Void) {
         
         let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
@@ -45,6 +48,41 @@ open class ZetaPushServiceListener{
             }
             
             callback(zpMessage)
+            
+        }
+        
+        _ = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushService.deploymentId!))!, block: channelBlockServiceCall)
+        
+    }
+    /*
+     Generic Subscribe with a Generic Array parameter
+     */
+    public func genericSubscribe<T: Glossy>(verb: String, callback: @escaping ([T])->Void) {
+        
+        let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
+            
+            
+            guard let zpMessage = [T].from(jsonArray: messageDict.allKeys as! [JSON]) else {
+                
+                self.onServiceError?(self.zetaPushService, ZetaPushServiceError.decodingError)
+                return
+            }
+            
+            callback(zpMessage)
+            
+        }
+        
+        _ = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushService.deploymentId!))!, block: channelBlockServiceCall)
+        
+    }
+    /*
+     Generic Subscribe with a NSDictionary parameter
+     */
+    public func genericSubscribe(verb: String, callback: @escaping (NSDictionary)->Void) {
+        
+        let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
+            
+            callback(messageDict)
             
         }
         

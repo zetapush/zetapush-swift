@@ -9,6 +9,10 @@
 import Foundation
 import Gloss
 
+/*
+    Class used as a base class for specific MacroPublisher
+ 
+ */
 open class ZetaPushMacroPublisher{
     
     var clientHelper: ClientHelper?

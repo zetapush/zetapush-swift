@@ -124,6 +124,14 @@ open class ZetaPushService : NSObject {
     open func publishGeneric<T: Glossy>(verb:String, parameters:T) {
         clientHelper?.publish((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.deploymentId!))!, message: parameters.toJSON()! as [String:AnyObject])
     }
+    
+    open func publishGeneric(verb:String) {
+        clientHelper?.publish((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.deploymentId!))!, message: ["":"" as AnyObject])
+    }
+    
+    open func publishGeneric(verb:String, parameters:NSDictionary) {
+        clientHelper?.publish((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.deploymentId!))!, message: parameters as! [String:AnyObject])
+    }
 }
 
 

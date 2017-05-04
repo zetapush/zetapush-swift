@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "ZetaPushSwift"
-  s.version      = "1.0.3"
+  s.version      = "1.0.4"
   s.summary      = "Swift client for ZetaPush"
 
   # This description is used to generate tags and improve search results.
@@ -57,7 +57,7 @@ Pod::Spec.new do |s|
   s.author             = { "Morvan Mikaël" => "morvan@zetapush.com" }
   # Or just: s.author    = "Morvan Mikaël"
   # s.authors            = { "Morvan Mikaël" => "bitbucket@mikaelmorvan.fr" }
-  # s.social_media_url   = "http://twitter.com/Morvan Mikaël"
+  s.social_media_url   = "http://twitter.com/zetapush"
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #

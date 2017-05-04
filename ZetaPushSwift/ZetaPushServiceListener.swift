@@ -36,7 +36,7 @@ open class ZetaPushServiceListener{
     /*
      Generic Subscribe with a Generic parameter
      */
-    public func genericSubscribe<T: Glossy>(verb: String, callback: @escaping (T)->Void) {
+    public func subscribe<T: Glossy>(verb: String, callback: @escaping (T)->Void) {
         
         let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
             
@@ -57,7 +57,7 @@ open class ZetaPushServiceListener{
     /*
      Generic Subscribe with a Generic Array parameter
      */
-    public func genericSubscribe<T: Glossy>(verb: String, callback: @escaping ([T])->Void) {
+    public func subscribe<T: Glossy>(verb: String, callback: @escaping ([T])->Void) {
         
         let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
             
@@ -78,7 +78,7 @@ open class ZetaPushServiceListener{
     /*
      Generic Subscribe with a NSDictionary parameter
      */
-    public func genericSubscribe(verb: String, callback: @escaping (NSDictionary)->Void) {
+    public func subscribe(verb: String, callback: @escaping (NSDictionary)->Void) {
         
         let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
             

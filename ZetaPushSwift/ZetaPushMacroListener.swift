@@ -30,7 +30,7 @@ open class ZetaPushMacroListener{
     /*
      Generic Subscribe with a Generic parameter
      */
-    public func genericSubscribe<T: Glossy>(verb: String, callback: @escaping (T)->Void) {
+    public func subscribe<T: Glossy>(verb: String, callback: @escaping (T)->Void) {
         
         let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
             
@@ -64,9 +64,47 @@ open class ZetaPushMacroListener{
     }
     
     /*
+     Generic Subscribe with a Generic parameter
+     */
+    public func subscribe<T: AbstractMacroCompletion>(verb: String, callback: @escaping (T)->Void) {
+        
+        let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
+            
+            if messageDict.object(forKey: "errors") != nil {
+                if let errors = messageDict["errors"] as? NSArray {
+                    if errors.count > 0 {
+                        if let error = errors[0] as? NSDictionary {
+                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.genericFromDictionnary(error))
+                        } else {
+                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.unknowError)
+                        }
+                    }
+                }
+            }
+            
+            if let result = messageDict["result"] as? NSDictionary {
+                
+                guard let zpMessage = T.resultType(json: result as! JSON) else {
+                    
+                    self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
+                    return
+                }
+                
+                let completion = T(result: zpMessage, name: verb, requestId: "")
+                
+                callback(completion)
+            }
+            
+        }
+        
+        _ = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!))!, block: channelBlockServiceCall)
+        
+    }
+    
+    /*
      Generic Subscribe with a Generic Array parameter
      */
-    public func genericSubscribe<T: Glossy>(verb: String, callback: @escaping ([T])->Void) {
+    public func subscribe<T: Glossy>(verb: String, callback: @escaping ([T])->Void) {
         
         let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
             
@@ -102,7 +140,7 @@ open class ZetaPushMacroListener{
     /*
         Generic Subscribe with a NSDictionary parameter
      */
-    public func genericSubscribe(verb: String, callback: @escaping (NSDictionary)->Void) {
+    public func subscribe(verb: String, callback: @escaping (NSDictionary)->Void) {
         
         let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
             
@@ -128,4 +166,5 @@ open class ZetaPushMacroListener{
         _ = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!))!, block: channelBlockServiceCall)
         
     }
+    
 }

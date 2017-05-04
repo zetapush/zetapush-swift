@@ -18,6 +18,28 @@ import PromiseKit
 import XCGLogger
 import Gloss
 
+public protocol AbstractMacroCompletion{
+    associatedtype resultType:Glossy
+    init(result: resultType, name: String, requestId: String)
+    var name: String { get set }
+    var requestId: String { get set }
+    var result: resultType { get set }
+}
+// Dummy class
+public struct EmptyMessage: Glossy {
+    let empty: String?
+    
+    public init?(json: JSON) {
+        self.empty = "empty" <~~ json
+    }
+    
+    public func toJSON() -> JSON? {
+        return jsonify([
+            "empty" ~~> self.empty
+            ])
+    }
+}
+
 public enum ZetaPushMacroError: Error {
     case genericError(macroName: String, errorMessage: String, errorCode: String, errorLocation: String)
     case unknowError
@@ -134,19 +156,19 @@ open class ZetaPushMacroService : NSObject {
         }
     }
     
-    open func call(verb:String, parameters:[String:AnyObject]) {
+    open func call(verb:String, parameters:NSDictionary) {
         let dict:[String:AnyObject] = [
             "name": verb as AnyObject,
             "hardFail": true as AnyObject,
-            "parameters": parameters as AnyObject
+            "parameters": parameters
         ]
         self.clientHelper?.publish(composeServiceChannel("call"), message: dict)
     }
     
     /*
-        asynCall return a promise
+        Call return a promise
      */
-    open func asyncCall(verb:String, parameters:[String:AnyObject]) -> Promise<NSDictionary> {
+    open func call(verb:String, parameters:[String:AnyObject]) -> Promise<NSDictionary> {
         return Promise { fulfill, reject in
             let requestId = UUID().uuidString
             
@@ -196,7 +218,7 @@ open class ZetaPushMacroService : NSObject {
         }
     }
     
-    open func asyncCallGeneric<T : Glossy, U: Glossy>(verb:String, parameters:T) -> Promise<U> {
+    open func call<T : Glossy, U: AbstractMacroCompletion>(verb:String, parameters:T) -> Promise<U> {
         return Promise { fulfill, reject in
             
             let requestId = UUID().uuidString
@@ -224,14 +246,16 @@ open class ZetaPushMacroService : NSObject {
                 
                 if let result = messageDict["result"] as? NSDictionary {
                     
-                    guard let zpMessage = U(json: result as! JSON) else {
+                    guard let zpMessage = U.resultType(json: result as! JSON) else {
                         
                         reject(ZetaPushMacroError.decodingError)
                         
                         return
                     }
                     
-                    fulfill(zpMessage)
+                    let completion = U(result: zpMessage, name: verb, requestId: requestId)
+                    
+                    fulfill(completion)
                 }
                 if messageDict.object(forKey: "errors") != nil {
                     if let errors = messageDict["errors"] as? NSArray {
@@ -254,7 +278,66 @@ open class ZetaPushMacroService : NSObject {
         }
     }
     
-    open func callGeneric<T: Glossy>(verb:String, parameters:T) {
+    open func call<U: AbstractMacroCompletion>(verb:String) -> Promise<U> {
+        return Promise { fulfill, reject in
+            
+            let requestId = UUID().uuidString
+            
+            let dict:[String:AnyObject] = [
+                "name": verb as AnyObject,
+                "hardFail": false as AnyObject,
+                "requestId": requestId as AnyObject
+            ]
+            
+            var sub: Subscription? = nil
+            
+            let channelBlockMacroCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
+                // Check if the requestId is similar to the one sent
+                if messageDict.object(forKey: "requestId") != nil {
+                    if let msgRequestId = messageDict["requestId"] as? String {
+                        if msgRequestId != requestId {
+                            return
+                        }
+                    }
+                }
+                
+                self.clientHelper?.unsubscribe(sub!)
+                
+                if let result = messageDict["result"] as? NSDictionary {
+                    
+                    guard let zpMessage = U.resultType(json: result as! JSON) else {
+                        
+                        reject(ZetaPushMacroError.decodingError)
+                        
+                        return
+                    }
+                    
+                    let completion = U(result: zpMessage, name: verb, requestId: requestId)
+                    
+                    fulfill(completion)
+                }
+                if messageDict.object(forKey: "errors") != nil {
+                    if let errors = messageDict["errors"] as? NSArray {
+                        if errors.count > 0 {
+                            if let error = errors[0] as? NSDictionary {
+                                reject(ZetaPushMacroError.genericFromDictionnary(error))
+                            } else {
+                                reject(ZetaPushMacroError.unknowError)
+                            }
+                        }
+                    }
+                }
+                
+            }
+            
+            sub = self.clientHelper?.subscribe(composeServiceChannel(verb), block: channelBlockMacroCall)
+            
+            self.clientHelper?.publish(composeServiceChannel("call"), message: dict)
+            
+        }
+    }
+    
+    open func call<T: Glossy>(verb:String, parameters:T) {
         let dict:[String:AnyObject] = [
             "name": verb as AnyObject,
             "hardFail": true as AnyObject,
@@ -263,7 +346,7 @@ open class ZetaPushMacroService : NSObject {
         self.clientHelper?.publish(composeServiceChannel("call"), message: dict)
     }
     
-    open func callGeneric(verb:String) {
+    open func call(verb:String) {
         let dict:[String:AnyObject] = [
             "name": verb as AnyObject,
             "hardFail": true as AnyObject
@@ -271,14 +354,7 @@ open class ZetaPushMacroService : NSObject {
         self.clientHelper?.publish(composeServiceChannel("call"), message: dict)
     }
     
-    open func callGeneric(verb:String, parameters:NSDictionary) {
-        let dict:[String:AnyObject] = [
-            "name": verb as AnyObject,
-            "hardFail": true as AnyObject,
-            "parameters": parameters
-        ]
-        self.clientHelper?.publish(composeServiceChannel("call"), message: dict)
-    }
+    
     
 }
 

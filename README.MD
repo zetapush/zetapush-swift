@@ -287,12 +287,12 @@ class ViewController: UIViewController {
 
     // Just call the macro service when we click on a button
     @IBAction func OnMyFirstTestDown(_ sender: Any) {
-        zetaPushMacroService?.asyncCall(verb: "welcome", parameters: ["message": "hello world" as NSObject])
+        zetaPushMacroService?.call(verb: "welcome", parameters: ["message": "hello world" as NSObject])
             .then{ result in
-               print ("asyncCall result", result)
+               print ("call result", result)
             }
             .catch { error in
-                print ("asyncCall error", error)
+                print ("call error", error)
             }
     }
 

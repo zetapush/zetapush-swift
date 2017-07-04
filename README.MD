@@ -301,6 +301,64 @@ class ViewController: UIViewController {
 
 That's it, you are able to call a service and a macro from ZetaPush. 
 
-## Generics with ZetaPush
+## Auto-generated code with ZetaPush CLI
 
-TBD
+With ZetaPush command line, you can generate a swift code based on zms language. This generated code will give you everything you need to use your macors.
+
+This generated code will create 4 files:
+
+### Structure file
+
+In this file, you will get all the structures (classes) needed to call your macro: the input classes, the output clases and the completion classes.
+
+### Async API
+
+In this file, a class is generated with all the methods needed to call the macros.
+
+### Promise API
+
+In this file, a class is generated with all the methods needed to call the macros. The main difference between the Async API is that the methods return a promise.
+
+### AsyncAPIListener
+
+In this file, a class is generated with all the method needed to listen to the result of the macros.
+
+## How to use auto-generated code
+
+### Create a class that inherit from AsyncAPIListener
+
+In this class, you will override the methods that fits your needs.
+```swift
+open class MyAPIListener: MacrosAsyncApiListener{
+    // Only override the method i'm interesting in
+    open override func sendMessage(_ parameter: sendMessageCompletion){
+        print("sendMessage")
+    }
+```
+
+When you will create a MyAPIListener object, the sendMessage function will be called each time the corresponding macro is called.
+
+### Use the AsyncApi or PromiseAPI objects
+
+```swift
+// Create the objects with a ZetaPushClient parameter
+	webRTCAsyncApi = WebRTCAsyncApi(zetaPushClient)
+        webRTCPromiseApi = WebRTCPromiseApi(zetaPushClient)
+	
+	//To call a promise API
+	
+	webRTCPromiseApi?.createPublicRoom(parameters: _createPublicRoomInput)
+            .then { result -> Void in
+                
+                print ("createPublicRoom", result.result.room!)
+                
+            }
+            .catch { error in
+                print ("createPublicRoom error", error)
+        }
+	
+	// To call the same api with the asyncAPI
+	webRTCAsyncApi?.createPublicRoom(parameters: _createPublicRoomInput)
+	// The result will be returned to the AsyncAPIListener
+	
+```

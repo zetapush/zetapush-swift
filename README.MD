@@ -21,7 +21,7 @@ sudo gem install cocoapods
 First create a new project with XCode.
 In the project directory launch the command
 
-```cmd
+```console
 pod init
 ```
 
@@ -44,14 +44,13 @@ end
 
 Finally, run pod install to install libraries
 
-```cmd
+```console
 pod install
-
 ```
 
 You can now open the newly generated workspace (.xcworkspace) in XCode
 
-WARNING ! Close the previously openned project and open the workspace instead
+:warning: **Close the previously openned project and open the workspace instead.**
 
 ### Pre-requisit
 
@@ -60,6 +59,10 @@ You must have an account on [ZetaPush](https://zetapush.com) and a valid Sandbox
 For the examples above, you must have deployed an authentication ( [Weak](https://ref.zpush.io/#it_weak) at least) and an [Echo](https://ref.zpush.io/#it_echo) service
 
 You can read the [full documentation](https://doc.zetapush.com/how/introduction/) for more information
+
+## Any questions?
+
+* [Frequently Asked Questions](./FAQ.md)
 
 ## Code your first client
 

@@ -21,7 +21,7 @@ sudo gem install cocoapods
 First create a new project with XCode.
 In the project directory launch the command
 
-```cmd
+```console
 pod init
 ```
 
@@ -44,14 +44,13 @@ end
 
 Finally, run pod install to install libraries
 
-```cmd
+```console
 pod install
-
 ```
 
 You can now open the newly generated workspace (.xcworkspace) in XCode
 
-WARNING ! Close the previously openned project and open the workspace instead
+:warning: **Close the previously openned project and open the workspace instead.**
 
 ### Pre-requisit
 
@@ -60,6 +59,10 @@ You must have an account on [ZetaPush](https://zetapush.com) and a valid Sandbox
 For the examples above, you must have deployed an authentication ( [Weak](https://ref.zpush.io/#it_weak) at least) and an [Echo](https://ref.zpush.io/#it_echo) service
 
 You can read the [full documentation](https://doc.zetapush.com/how/introduction/) for more information
+
+## Any questions?
+
+* [Frequently Asked Questions](./FAQ.md)
 
 ## Code your first client
 
@@ -301,6 +304,64 @@ class ViewController: UIViewController {
 
 That's it, you are able to call a service and a macro from ZetaPush. 
 
-## Generics with ZetaPush
+## Auto-generated code with ZetaPush CLI
 
-TBD
+With ZetaPush command line, you can generate a swift code based on zms language. This generated code will give you everything you need to use your macors.
+
+This generated code will create 4 files:
+
+### Structure file
+
+In this file, you will get all the structures (classes) needed to call your macro: the input classes, the output clases and the completion classes.
+
+### Async API
+
+In this file, a class is generated with all the methods needed to call the macros.
+
+### Promise API
+
+In this file, a class is generated with all the methods needed to call the macros. The main difference between the Async API is that the methods return a promise.
+
+### AsyncAPIListener
+
+In this file, a class is generated with all the method needed to listen to the result of the macros.
+
+## How to use auto-generated code
+
+### Create a class that inherit from AsyncAPIListener
+
+In this class, you will override the methods that fits your needs.
+```swift
+open class MyAPIListener: MacrosAsyncApiListener{
+    // Only override the method i'm interesting in
+    open override func sendMessage(_ parameter: sendMessageCompletion){
+        print("sendMessage")
+    }
+```
+
+When you will create a MyAPIListener object, the sendMessage function will be called each time the corresponding macro is called.
+
+### Use the AsyncApi or PromiseAPI objects
+
+```swift
+// Create the objects with a ZetaPushClient parameter
+	webRTCAsyncApi = WebRTCAsyncApi(zetaPushClient)
+        webRTCPromiseApi = WebRTCPromiseApi(zetaPushClient)
+	
+	//To call a promise API
+	
+	webRTCPromiseApi?.createPublicRoom(parameters: _createPublicRoomInput)
+            .then { result -> Void in
+                
+                print ("createPublicRoom", result.result.room!)
+                
+            }
+            .catch { error in
+                print ("createPublicRoom error", error)
+        }
+	
+	// To call the same api with the asyncAPI
+	webRTCAsyncApi?.createPublicRoom(parameters: _createPublicRoomInput)
+	// The result will be returned to the AsyncAPIListener
+	
+```

@@ -25,6 +25,7 @@ public protocol AbstractMacroCompletion{
     var requestId: String { get set }
     var result: resultType { get set }
 }
+
 // Dummy class
 public struct EmptyMessage: Glossy {
     let empty: String?
@@ -37,6 +38,18 @@ public struct EmptyMessage: Glossy {
         return jsonify([
             "empty" ~~> self.empty
             ])
+    }
+}
+// Class usefull for a macro with empty result
+public struct EmptyCompletion : AbstractMacroCompletion {
+    public typealias resultType = EmptyMessage
+    public var result: EmptyMessage
+    public var requestId: String
+    public var name: String
+    public init(result: resultType, name: String, requestId: String){
+        self.result = result
+        self.name = name
+        self.requestId = requestId
     }
 }
 
@@ -65,10 +78,11 @@ open class ZetaPushMacroService : NSObject {
     
     open var onMacroError : ZPMacroServiceErrorBlock?
     
-    var clientHelper: ClientHelper?
+    public var clientHelper: ClientHelper?
     var deploymentId: String?
     var macroChannel: String?
     var macroChannelError: String?
+    var macroChannelTrace: String?
     
     var channelSubscriptionBlocks = Dictionary<String, Array<Subscription>>()
     
@@ -98,6 +112,14 @@ open class ZetaPushMacroService : NSObject {
         self.onMacroError?(self, ZetaPushMacroError.genericFromDictionnary(messageDict))
     }
     
+    // Callback for /trace macro channel
+    lazy var channelBlockMacroTrace:ChannelSubscriptionBlock = {(messageDict) -> Void in
+        self.log.debug("ZetaPushMacroService channelBlockMacroTrace")
+        self.log.debug(messageDict)
+        
+        //self.onMacroError?(self, ZetaPushMacroError.genericFromDictionnary(messageDict))
+    }
+    
     public init(_ clientHelper: ClientHelper, deploymentId: String){
         self.clientHelper = clientHelper
         self.deploymentId = deploymentId
@@ -111,6 +133,9 @@ open class ZetaPushMacroService : NSObject {
         
         self.macroChannelError = "/service/" + self.clientHelper!.getSandboxId() + "/" + self.deploymentId! + "/" + "error"
         _ = self.clientHelper?.subscribe(self.macroChannelError!, block: channelBlockMacroError)
+        
+        self.macroChannelTrace = "/service/" + self.clientHelper!.getSandboxId() + "/" + self.deploymentId! + "/" + "trace"
+        _ = self.clientHelper?.subscribe(self.macroChannelTrace!, block: channelBlockMacroTrace)
         
         self.clientHelper?.onDidSubscribeToChannel = {client, channel in
             self.log.debug("ZetaPushMacroService zetaPushClient.onDidSubscribeToChannel \(channel)")

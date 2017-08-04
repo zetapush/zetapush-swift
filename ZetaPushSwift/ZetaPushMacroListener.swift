@@ -11,7 +11,7 @@ import Gloss
 
 open class ZetaPushMacroListener{
     
-    var clientHelper: ClientHelper?
+    public var clientHelper: ClientHelper?
     public var zetaPushMacroService: ZetaPushMacroService
     open var onMacroError : ZPMacroServiceErrorBlock?
     

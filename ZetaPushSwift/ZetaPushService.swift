@@ -29,7 +29,7 @@ public enum ZetaPushServiceError: Error {
 
 open class ZetaPushService : NSObject {
     
-    var clientHelper: ClientHelper?
+    public var clientHelper: ClientHelper?
     var deploymentId: String?
     
     let log = XCGLogger(identifier: "serviceLogger", includeDefaultDestinations: true)

@@ -10,7 +10,7 @@ import Foundation
 import Gloss
 
 open class ZetaPushServiceListener{
-    var clientHelper: ClientHelper?
+    public var clientHelper: ClientHelper?
     var macroChannelError: String
     public var zetaPushService: ZetaPushService
     open var onServiceError: ZPServiceErrorBlock?

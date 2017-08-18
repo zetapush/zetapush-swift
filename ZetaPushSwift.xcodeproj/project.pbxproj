@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		35AFD5EA1F47216A00427AB9 /* ClientHelperDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35AFD5E91F47216A00427AB9 /* ClientHelperDelegate.swift */; };
 		35DE6ECD1EA8A1DE00E26BC1 /* ZetaPushMacroPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE6ECC1EA8A1DE00E26BC1 /* ZetaPushMacroPublisher.swift */; };
 		35DE6ECF1EA8A21900E26BC1 /* ZetaPushServicePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE6ECE1EA8A21900E26BC1 /* ZetaPushServicePublisher.swift */; };
 		35DE6ED51EAE385200E26BC1 /* ZetaPushMacroListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE6ED41EAE385200E26BC1 /* ZetaPushMacroListener.swift */; };
@@ -39,6 +40,7 @@
 
 /* Begin PBXFileReference section */
 		1749803BD13F37ED0A8AEB45 /* Pods_ZetaPushSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZetaPushSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		35AFD5E91F47216A00427AB9 /* ClientHelperDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientHelperDelegate.swift; sourceTree = "<group>"; };
 		35DE6ECC1EA8A1DE00E26BC1 /* ZetaPushMacroPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushMacroPublisher.swift; sourceTree = "<group>"; };
 		35DE6ECE1EA8A21900E26BC1 /* ZetaPushServicePublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushServicePublisher.swift; sourceTree = "<group>"; };
 		35DE6ED41EAE385200E26BC1 /* ZetaPushMacroListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushMacroListener.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 		C53F8E501E93E8EA00D5C62C /* ZetaPush */ = {
 			isa = PBXGroup;
 			children = (
+				35AFD5E91F47216A00427AB9 /* ClientHelperDelegate.swift */,
 				C5F9C0CD1E8D2E47000B8ECF /* ZetaPushServiceDelegate.swift */,
 				C58107F41E8A8695008266F0 /* ClientHelper.swift */,
 				C58107F51E8A8695008266F0 /* ClientHelper+Handshake.swift */,
@@ -297,6 +300,7 @@
 				C53F8E521E93F8F300D5C62C /* ZetaPushService.swift in Sources */,
 				C5896E6A1E841D450037800F /* WebsocketTransport.swift in Sources */,
 				C58107FA1E8A8695008266F0 /* ZetaPushClient.swift in Sources */,
+				35AFD5EA1F47216A00427AB9 /* ClientHelperDelegate.swift in Sources */,
 				C58107F91E8A8695008266F0 /* ClientHelper+Handshake.swift in Sources */,
 				35DE6ECF1EA8A21900E26BC1 /* ZetaPushServicePublisher.swift in Sources */,
 				C5F9C0CF1E8D2E47000B8ECF /* ZetaPushServiceDelegate.swift in Sources */,

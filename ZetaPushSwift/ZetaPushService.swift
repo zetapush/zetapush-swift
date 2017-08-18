@@ -43,11 +43,21 @@ open class ZetaPushService : NSObject {
         self.log.setup(level: (self.clientHelper?.getLogLevel())!)
     }
     
-    open func subscribe(verb: String, block:ChannelSubscriptionBlock?=nil) -> Subscription{
+    open func subscribe(verb: String, block:ChannelSubscriptionBlock?=nil) -> Subscription?{
         
-        let subscribedChannel = self.clientHelper?.composeServiceChannel(verb, deploymentId: self.deploymentId!)
+        guard let subscribedChannel = self.clientHelper?.composeServiceChannel(verb, deploymentId: self.deploymentId!)
+            else {
+                self.log.error("self.clientHelper?.composeServiceChannel error")
+                return nil
+        }
         
-        return self.clientHelper!.subscribe(subscribedChannel!, block: block)
+        guard let sub = self.clientHelper!.subscribe(subscribedChannel, block: block)
+            else {
+                self.log.error("self.clientHelper!.subscribe error")
+                return nil
+        }
+        
+        return sub
     }
     
     open func unsubscribe(_ subscription:Subscription){

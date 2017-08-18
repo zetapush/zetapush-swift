@@ -137,12 +137,6 @@ open class ZetaPushMacroService : NSObject {
         self.macroChannelTrace = "/service/" + self.clientHelper!.getSandboxId() + "/" + self.deploymentId! + "/" + "trace"
         _ = self.clientHelper?.subscribe(self.macroChannelTrace!, block: channelBlockMacroTrace)
         
-        self.clientHelper?.onDidSubscribeToChannel = {client, channel in
-            self.log.debug("ZetaPushMacroService zetaPushClient.onDidSubscribeToChannel \(channel)")
-        }
-        self.clientHelper?.onDidUnsubscribeToChannel = {client, channel in
-            self.log.debug("ZetaPushMacroService zetaPushClient.onDidUnsubscribeToChannel \(channel)")
-        }
     }
     
     public convenience init(_ clientHelper: ClientHelper){

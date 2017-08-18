@@ -37,24 +37,10 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     fileprivate var authentication: AbstractHandshake?
     var cometdClient: CometdClient?
     
-    // Callbacks for connection
-    open var onConnectionEstablished : ((_ client:ClientHelper)->())?
-    open var onConnectionBroken : ((_ client:ClientHelper)->())?
-    open var onConnectionClosed : ((_ client:ClientHelper)->())?
-    open var onSuccessfulHandshake : ((_ client:ClientHelper)->())?
-    open var onZetaPushClientReady : ((_ client:ClientHelper)->())?
-    open var onFailedHandshake : ((_ client:ClientHelper)->())?
-    
+    open weak var delegate:ClientHelperDelegate?
     
     let log = XCGLogger(identifier: "zetapushLogger", includeDefaultDestinations: true)
     let tags = XCGLogger.Constants.userInfoKeyTags
-    
-    // Callbacks for Subscription
-    open var onDidSubscribeToChannel : ((_ client:ClientHelper, _ channel:String)->())?
-    open var onDidUnsubscribeToChannel : ((_ client:ClientHelper, _ channel:String)->())?
-    open var onSubscriptionFailedWithError : ((_ client:ClientHelper, _ error:subscriptionError)->())?
-    
-    open var onMessageReceived : ((_ client:ClientHelper, _ messageDict : NSDictionary, _ channel:String)->())?
     
     public init(apiUrl:String, sandboxId:String, authentication: AbstractHandshake, resource: String = "", logLevel: XCGLogger.Level = .severe ){
         
@@ -136,17 +122,16 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         
     }
     
-    open func subscribe(_ channel:String, block:ChannelSubscriptionBlock?=nil) -> Subscription {
+    open func subscribe(_ channel:String, block:ChannelSubscriptionBlock?=nil) -> Subscription? {
         let (_, sub) = self.cometdClient!.subscribeToChannel(channel, block: block)
         
-        if let sub = sub {
-            self.subscriptionQueue.append(sub)
-        } else {
+        guard sub != nil else {
             self.log.error ("sub is NILLLLLL", userInfo: [tags: "zetapush"])
             self.log.error (channel, userInfo: [tags: "zetapush"])
+            return nil
         }
-        
-        return sub!
+
+        return sub
     }
     
     open func publish(_ channel:String, message:[String:AnyObject]) {
@@ -242,7 +227,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     
     open func connectedToServer(_ client: CometdClient) {
         log.debug("ClientHelper Connected to ZetaPush server", userInfo: [tags: "zetapush"])
-        onConnectionEstablished?(self)
+        self.delegate?.onConnectionEstablished(self)
     }
     
     
@@ -271,11 +256,9 @@ open class ClientHelper : NSObject, CometdClientDelegate{
             for sub in tempArray {
                 _ = self.subscribe(sub.channel, block: sub.callback)
             }
-        } else {
-            onZetaPushClientReady?(self)
         }
         
-        onSuccessfulHandshake?(self)
+        self.delegate?.onSuccessfulHandshake(self)
         
         firstHandshakeFlag = false
  
@@ -283,7 +266,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     
     open func handshakeFailed(_ client: CometdClient){
         log.error("ClientHelper Handshake Failed", userInfo: [tags: "zetapush"])
-        onFailedHandshake?(self)
+        self.delegate?.onFailedHandshake(self)
     }
     
     open func connectionFailed(_ client: CometdClient) {
@@ -295,7 +278,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
                                  userInfo: nil,
                                  repeats: false)
         }
-        onConnectionBroken?(self)
+        self.delegate?.onConnectionBroken(self)
     }
     
     func connectionFailedTimer(timer: Timer){
@@ -304,28 +287,27 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     
     open func disconnectedFromServer(_ client: CometdClient) {
         log.debug("ClientHelper Disconnected from Cometd server", userInfo: [tags: "zetapush"])
-        onConnectionClosed?(self)
+        self.delegate?.onConnectionClosed(self)
     }
     
     open func didSubscribeToChannel(_ client: CometdClient, channel: String) {
         log.debug("ClientHelper Subscribed to channel \(channel)", userInfo: [tags: "zetapush"])
-        onDidSubscribeToChannel?(self, channel)
+        self.delegate?.onDidSubscribeToChannel(self, channel: channel)
     }
     
     open func didUnsubscribeFromChannel(_ client: CometdClient, channel: String) {
         log.debug("ClientHelper Unsubscribed from channel \(channel)", userInfo: [tags: "zetapush"])
-        onDidUnsubscribeToChannel?(self, channel)
+        self.delegate?.onDidUnsubscribeFromChannel(self, channel: channel)
     }
     
     open func subscriptionFailedWithError(_ client: CometdClient, error:subscriptionError) {
         log.error("ClientHelper Subscription failed", userInfo: [tags: "zetapush"])
-        onSubscriptionFailedWithError?(self, error)
+        self.delegate?.onSubscriptionFailedWithError(self, error: error)
     }
     
     open func messageReceived(_ client: CometdClient, messageDict: NSDictionary, channel: String) {
         log.debug("ClientHelper messageReceived \(channel)", userInfo: [tags: "zetapush"])
         log.debug(messageDict, userInfo: [tags: "zetapush"])
-        onMessageReceived?(self, messageDict, channel)
         
     }
     

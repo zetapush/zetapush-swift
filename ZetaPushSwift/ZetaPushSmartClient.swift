@@ -86,6 +86,11 @@ open class ZetaPushSmartClient: ClientHelper {
         defaults.removeObject(forKey: zetaPushDefaultKeys.publicToken)
     }
     
+    override open func logout() {
+        setAuthentication(authentication: Authentication.weak("", deploymentId: self.weakDeploymentId))
+        super.logout()
+    }
+    
     open func setCredentials(login: String, password: String){
         self.login = login
         self.password = password

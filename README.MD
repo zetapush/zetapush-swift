@@ -102,20 +102,21 @@ To verify that you're really connected, let's add a callback to be warned when t
 import UIKit
 import ZetaPushSwift
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, ClientHelperDelegate {
 
     let zetaPushWeakClient:ZetaPushWeakClient = ZetaPushWeakClient(sandboxId: "YOUR_SANDBOX_ID", weakDeploymentId: "YOUR_WEAK_DEPLOYMENT_ID")
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // 
-        zetaPushWeakClient.onSuccessfulHandshake = onSuccessfulHandshake
+        // Handle lifecycle events
+        zetaPushWeakClient.delegate = self
 
         // Connect to ZetaPush
         zetaPushWeakClient.connect()
     }
 
+    // Callback fired when a successful handshake occurs
     func onSuccessfulHandshake(_ client:ClientHelper){
         // The connection to ZetaPush is a success
         print("ViewController SuccessfulHandshake")
@@ -140,7 +141,7 @@ Back to the code !
 import UIKit
 import ZetaPushSwift
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, ClientHelperDelegate {
 
     let zetaPushWeakClient:ZetaPushWeakClient = ZetaPushWeakClient(sandboxId: "YOUR_SANDBOX_ID", weakDeploymentId: "YOUR_WEAK_DEPLOYMENT_ID")
     
@@ -150,8 +151,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Callback fired when a successful handshake occurs
-        zetaPushWeakClient.onSuccessfulHandshake = onSuccessfulHandshake
+        // Handle lifecycle events
+        zetaPushWeakClient.delegate = self
 
         // Create an echo service with the corresponding DeploymentId
         zetaPushServiceEcho = ZetaPushService(zetaPushWeakClient, deploymentId: "YOUR_ECHO_DEPLOYMENT_ID")
@@ -165,6 +166,7 @@ class ViewController: UIViewController {
         zetaPushWeakClient.connect()
     }
 
+    // Callback fired when a successful handshake occurs
     func onSuccessfulHandshake(_ client:ClientHelper){
         // The connection to ZetaPush is a success
         print("ViewController SuccessfulHandshake")
@@ -197,8 +199,8 @@ Les create a simple macro with Eclipe. This macro is the default one when you cr
 
 ```
 /**
-* Takes a message as input, and returns it, with a server message
-*/
+ * Takes a message as input, and returns it, with a server message
+ */
 macroscript welcome(/** message from the client */ string message = "Hello") {
 	// ...
 } return {clientMessage : message, serverMessage : WELCOME_MESSAGE} on channel __selfName
@@ -215,7 +217,7 @@ Back to code !
 import UIKit
 import ZetaPushSwift
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, ClientHelperDelegate {
 
     let zetaPushWeakClient:ZetaPushWeakClient = ZetaPushWeakClient(sandboxId: "YOUR_SANDBOX_ID", weakDeploymentId: "YOUR_WEAK_DEPLOYMENT_ID")
 
@@ -225,8 +227,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Callback fired when a successful handshake occurs
-        zetaPushWeakClient.onSuccessfulHandshake = onSuccessfulHandshake
+        // Handle lifecycle events
+        zetaPushWeakClient.delegate = self
 
         // Create a new Macro Service (with default deployementId: "macro_0")
         zetaPushMacroService = ZetaPushMacroService(zetaPushWeakClient)
@@ -240,6 +242,7 @@ class ViewController: UIViewController {
         zetaPushWeakClient.connect()
     }
 
+    // Callback fired when a successful handshake occurs
     func onSuccessfulHandshake(_ client:ClientHelper){
         // The connection to ZetaPush is a success
         print("ViewController SuccessfulHandshake")
@@ -273,8 +276,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Callback fired when a successful handshake occurs
-        zetaPushWeakClient.onSuccessfulHandshake = onSuccessfulHandshake
+        // Handle lifecycle events
+        zetaPushWeakClient.delegate = self
 
         // Create a new Macro Service (with default deployementId: "macro_0")
         zetaPushMacroService = ZetaPushMacroService(zetaPushWeakClient)
@@ -283,6 +286,7 @@ class ViewController: UIViewController {
         zetaPushWeakClient.connect()
     }
 
+    // Callback fired when a successful handshake occurs
     func onSuccessfulHandshake(_ client:ClientHelper){
         // The connection to ZetaPush is a success
         print("ViewController SuccessfulHandshake")
@@ -332,11 +336,12 @@ In this file, a class is generated with all the method needed to listen to the r
 
 In this class, you will override the methods that fits your needs.
 ```swift
-open class MyAPIListener: MacrosAsyncApiListener{
+open class MyAPIListener: MacrosAsyncApiListener {
     // Only override the method i'm interesting in
-    open override func sendMessage(_ parameter: sendMessageCompletion){
+    open override func sendMessage(_ parameter: SendMessageCompletion){
         print("sendMessage")
     }
+}
 ```
 
 When you will create a MyAPIListener object, the sendMessage function will be called each time the corresponding macro is called.

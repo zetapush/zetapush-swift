@@ -240,6 +240,10 @@ open class ClientHelper : NSObject, CometdClientDelegate{
            self.token = authentication["token"] as! String
         }
         
+        if authentication["publicToken"] != nil {
+            self.publicToken = authentication["publicToken"] as! String
+        }
+        
         self.userId = authentication["userId"] as! String
         storeHandshakeToken(authentication)
         

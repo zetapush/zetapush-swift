@@ -31,6 +31,8 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     var subscriptionQueue = Array<Subscription>()
     // Flag used for automatic reconnection
     var wasConnected:Bool = false
+    // Delay in s before automatic reconnection
+    var automaticReconnectionDelay:Double = 10
     
     var logLevel: XCGLogger.Level = .severe
     
@@ -70,6 +72,10 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     
     open func setAuthentication(authentication: AbstractHandshake){
         self.authentication = authentication
+    }
+    
+    open func setAutomaticReconnectionDelay(delay: Double){
+        self.automaticReconnectionDelay = delay
     }
     
     // Disconnect from server
@@ -276,7 +282,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     open func connectionFailed(_ client: CometdClient) {
         log.error("ClientHelper Failed to connect to Cometd server!", userInfo: [tags: "zetapush"])
         if self.wasConnected {
-            Timer.scheduledTimer(timeInterval: 10,
+            Timer.scheduledTimer(timeInterval: self.automaticReconnectionDelay,
                                  target: self,
                                  selector: #selector(self.connectionFailedTimer),
                                  userInfo: nil,

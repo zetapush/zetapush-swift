@@ -233,7 +233,11 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     
     open func connectedToServer(_ client: CometdClient) {
         log.debug("ClientHelper Connected to ZetaPush server", userInfo: [tags: "zetapush"])
-        self.delegate?.onConnectionEstablished(self)
+        self.wasConnected = self.connected;
+        self.connected = true;
+        if (!self.wasConnected && self.connected) {
+            self.delegate?.onConnectionEstablished(self);
+        }
     }
     
     
@@ -253,8 +257,13 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         self.userId = authentication["userId"] as! String
         storeHandshakeToken(authentication)
         
-        self.wasConnected = true
+        self.subsbribeQueuedSubscriptions();
         
+        self.delegate?.onSuccessfulHandshake(self)
+    }
+
+    func subsbribeQueuedSubscriptions() {
+        log.debug("ClientHelper subscribe queued subscriptions", userInfo: [tags: "zetapush"])
         // Automatic resubscribe after handshake (not the first one)
         if !firstHandshakeFlag {
             
@@ -267,11 +276,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
                 _ = self.subscribe(sub.channel, block: sub.callback)
             }
         }
-        
-        self.delegate?.onSuccessfulHandshake(self)
-        
         firstHandshakeFlag = false
- 
     }
     
     open func handshakeFailed(_ client: CometdClient){

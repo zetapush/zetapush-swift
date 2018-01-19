@@ -15,21 +15,20 @@ extension CometdClient {
     // MARK:
     // MARK: Parsing
     
-    func parseCometdMessage(_ messageJSON:JSON) {
-        let messageDict = messageJSON[0]
-        if let channel = messageDict[Bayeux.Channel.rawValue].string {
+    func parseCometdMessage(_ messages:JSON) {
+        let message = messages[0]
+        if let channel = message[Bayeux.Channel.rawValue].string {
             log.verbose("parseCometdMessage \(channel)")
-            log.verbose(messageDict)
+            log.verbose(message)
             
             // Handle Meta Channels
             if let metaChannel = BayeuxChannel(rawValue: channel) {
                 switch(metaChannel) {
                 case .Handshake:
-                    self.cometdClientId = messageDict[Bayeux.ClientId.rawValue].stringValue
-                    if messageDict[Bayeux.Successful.rawValue].int == 1 {
-                        self.delegate?.connectedToServer(self)
-                        if messageJSON[0][Bayeux.Ext.rawValue] != JSON.null {
-                            let ext : AnyObject = messageDict[Bayeux.Ext.rawValue].object as AnyObject
+                    self.cometdClientId = message[Bayeux.ClientId.rawValue].stringValue
+                    if message[Bayeux.Successful.rawValue].int == 1 {
+                        if message[Bayeux.Ext.rawValue] != JSON.null {
+                            let ext : AnyObject = message[Bayeux.Ext.rawValue].object as AnyObject
                             self.delegate?.handshakeSucceeded(self, handshakeDict: ext as! NSDictionary)
                         }
                         self.cometdConnected = true;
@@ -43,8 +42,9 @@ extension CometdClient {
                         self.delegate?.disconnectedFromServer(self)
                     }
                 case .Connect:
-                    if messageDict[Bayeux.Successful.rawValue].int == 1 {
+                    if message[Bayeux.Successful.rawValue].int == 1 {
                         self.cometdConnected = true;
+                        self.delegate?.connectedToServer(self)
                         self.connect()
                     } else {
                         self.cometdConnected = false;
@@ -52,7 +52,7 @@ extension CometdClient {
                         self.delegate?.disconnectedFromServer(self)
                     }
                 case .Disconnect:
-                    if messageDict[Bayeux.Successful.rawValue].int == 1 {
+                    if message[Bayeux.Successful.rawValue].int == 1 {
                         self.cometdConnected = false;
                         self.transport?.closeConnection()
                         self.delegate?.disconnectedFromServer(self)
@@ -62,8 +62,8 @@ extension CometdClient {
                         self.delegate?.disconnectedFromServer(self)
                     }
                 case .Subscribe:
-                    if let success = messageJSON[0][Bayeux.Successful.rawValue].int, success == 1 {
-                        if let subscription = messageJSON[0][Bayeux.Subscription.rawValue].string {
+                    if let success = message[Bayeux.Successful.rawValue].int, success == 1 {
+                        if let subscription = message[Bayeux.Subscription.rawValue].string {
                             _ = removeChannelFromPendingSubscriptions(subscription)
                             
                             self.openSubscriptions.append(CometdSubscriptionModel(subscriptionUrl: subscription, clientId: cometdClientId))
@@ -73,8 +73,8 @@ extension CometdClient {
                         }
                     } else {
                         // Subscribe Failed
-                        if let error = messageJSON[0][Bayeux.Error.rawValue].string,
-                            let subscription = messageJSON[0][Bayeux.Subscription.rawValue].string {
+                        if let error = message[Bayeux.Error.rawValue].string,
+                            let subscription = message[Bayeux.Subscription.rawValue].string {
                             _ = removeChannelFromPendingSubscriptions(subscription)
                             
                             self.delegate?.subscriptionFailedWithError(
@@ -84,7 +84,7 @@ extension CometdClient {
                         }
                     }
                 case .Unsubscibe:
-                    if let subscription = messageJSON[0][Bayeux.Subscription.rawValue].string {
+                    if let subscription = message[Bayeux.Subscription.rawValue].string {
                         _ = removeChannelFromOpenSubscriptions(subscription)
                         self.delegate?.didUnsubscribeFromChannel(self, channel: subscription)
                     } else {
@@ -94,8 +94,8 @@ extension CometdClient {
             } else {
                 // Handle Client Channel
                 if self.isSubscribedToChannel(channel) {
-                    if messageJSON[0][Bayeux.Data.rawValue] != JSON.null {
-                        let data: AnyObject = messageJSON[0][Bayeux.Data.rawValue].object as AnyObject
+                    if message[Bayeux.Data.rawValue] != JSON.null {
+                        let data: AnyObject = message[Bayeux.Data.rawValue].object as AnyObject
                         
                         if let channelBlock = self.channelSubscriptionBlocks[channel] {
                             for channel in channelBlock {
@@ -118,7 +118,7 @@ extension CometdClient {
                 }
             }
         } else {
-            log.warning("Cometd: Missing channel for \(messageDict)")
+            log.warning("Cometd: Missing channel for \(message)")
         }
     }
 }

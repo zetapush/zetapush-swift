@@ -71,6 +71,18 @@ public enum Bayeux: String {
     case Ext = "ext"
 }
 
+public enum BayeuxAdvice: String {
+    case Interval = "interval"
+    case Reconnect = "reconnect"
+    case Timeout = "timeout"
+}
+
+public enum BayeuxAdviceReconnect: String {
+    case None = "none"
+    case Retry = "retry"
+    case Handshae = "handshake"
+}
+
 // MARK: Private Bayuex Methods
 extension CometdClient {
     

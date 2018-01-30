@@ -80,7 +80,9 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     
     // Disconnect from server
     open func disconnect(){
+        log.debug("ClientHelper disconnect", userInfo: [tags: "zetapush"])
         self.wasConnected = false;
+        self.connected = false;
         cometdClient!.disconnectFromServer()
     }
     
@@ -153,6 +155,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     }
     
     open func logout(){
+        log.debug("ClientHelper logout", userInfo: [tags: "zetapush"])
         eraseHandshakeToken()
         disconnect()
     }
@@ -302,6 +305,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     
     open func disconnectedFromServer(_ client: CometdClient) {
         log.debug("ClientHelper Disconnected from Cometd server", userInfo: [tags: "zetapush"])
+        self.connected = false;
         self.delegate?.onConnectionClosed(self)
     }
     

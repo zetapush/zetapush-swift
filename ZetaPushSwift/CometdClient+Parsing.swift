@@ -42,17 +42,24 @@ extension CometdClient {
                         self.delegate?.disconnectedFromServer(self)
                     }
                 case .Connect:
-                    if message[Bayeux.Successful.rawValue].int == 1 {
-                        self.cometdConnected = true;
-                        self.delegate?.connectedToServer(self)
-                        self.connect()
+                    let advice = message[Bayeux.Advice.rawValue];
+                    let successful = message[Bayeux.Successful.rawValue];
+                    if successful.boolValue {
+                        let reconnect = advice[BayeuxAdvice.Reconnect.rawValue].stringValue;
+                        if (reconnect == BayeuxAdviceReconnect.Retry.rawValue) {
+                            self.cometdConnected = true;
+                            self.delegate?.connectedToServer(self)
+                            self.connect()
+                        } else {
+                            self.cometdConnected = false;
+                        }
                     } else {
                         self.cometdConnected = false;
                         self.transport?.closeConnection()
                         self.delegate?.disconnectedFromServer(self)
                     }
                 case .Disconnect:
-                    if message[Bayeux.Successful.rawValue].int == 1 {
+                    if message[Bayeux.Successful.rawValue].boolValue {
                         self.cometdConnected = false;
                         self.transport?.closeConnection()
                         self.delegate?.disconnectedFromServer(self)

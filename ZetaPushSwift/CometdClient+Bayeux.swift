@@ -80,7 +80,7 @@ public enum BayeuxAdvice: String {
 public enum BayeuxAdviceReconnect: String {
     case None = "none"
     case Retry = "retry"
-    case Handshae = "handshake"
+    case Handshake = "handshake"
 }
 
 // MARK: Private Bayuex Methods

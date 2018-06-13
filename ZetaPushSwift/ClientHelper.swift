@@ -303,7 +303,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         self.connect()
     }
     
-    public func reconnect() {
+    public func reconnect(_ client: CometdClient) {
         self.connect()
     }
     

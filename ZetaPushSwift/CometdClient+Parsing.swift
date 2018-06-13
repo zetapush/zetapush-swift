@@ -57,7 +57,7 @@ extension CometdClient {
                         if (reconnect == BayeuxAdviceReconnect.Handshake.rawValue) {
                             // reconnect client here
                             // cause server reconnect property type, in advice, is 'handshake'
-                            delegate?.reconnect()
+                            delegate?.reconnect(self)
                         } else {
                             self.cometdConnected = false
                             self.transport?.closeConnection()

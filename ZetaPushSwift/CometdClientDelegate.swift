@@ -26,6 +26,7 @@ public protocol CometdClientDelegate: NSObjectProtocol {
     func didUnsubscribeFromChannel(_ client:CometdClient, channel:String)
     func subscriptionFailedWithError(_ client:CometdClient, error:subscriptionError)
     func cometdClientError(_ client:CometdClient, error:NSError)
+    func reconnect()
 }
 
 public extension CometdClientDelegate {
@@ -40,5 +41,6 @@ public extension CometdClientDelegate {
     func didUnsubscribeFromChannel(_ client:CometdClient, channel:String){}
     func subscriptionFailedWithError(_ client:CometdClient, error:subscriptionError){}
     func cometdClientError(_ client:CometdClient, error:NSError){}
+    func reconnect(){}
 }
 

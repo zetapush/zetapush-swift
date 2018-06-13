@@ -303,6 +303,10 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         self.connect()
     }
     
+    public func reconnect() {
+        self.connect()
+    }
+    
     open func disconnectedFromServer(_ client: CometdClient) {
         log.debug("ClientHelper Disconnected from Cometd server", userInfo: [tags: "zetapush"])
         self.connected = false;

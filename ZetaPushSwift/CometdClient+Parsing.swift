@@ -44,8 +44,8 @@ extension CometdClient {
                 case .Connect:
                     let advice = message[Bayeux.Advice.rawValue];
                     let successful = message[Bayeux.Successful.rawValue];
+                    let reconnect = advice[BayeuxAdvice.Reconnect.rawValue].stringValue
                     if successful.boolValue {
-                        let reconnect = advice[BayeuxAdvice.Reconnect.rawValue].stringValue;
                         if (reconnect == BayeuxAdviceReconnect.Retry.rawValue) {
                             self.cometdConnected = true;
                             self.delegate?.connectedToServer(self)
@@ -54,9 +54,13 @@ extension CometdClient {
                             self.cometdConnected = false;
                         }
                     } else {
+                        
                         self.cometdConnected = false;
                         self.transport?.closeConnection()
                         self.delegate?.disconnectedFromServer(self)
+                        if (reconnect == BayeuxAdviceReconnect.Handshake.rawValue) {
+                            self.delegate?.disconnectedAdviceReconnect(self)
+                        }
                     }
                 case .Disconnect:
                     if message[Bayeux.Successful.rawValue].boolValue {

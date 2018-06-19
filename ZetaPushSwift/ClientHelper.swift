@@ -309,6 +309,11 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         self.delegate?.onConnectionClosed(self)
     }
     
+    open func disconnectedAdviceReconnect(_ client:CometdClient){
+        log.debug("ClientHelper Disconnected from Cometd server", userInfo: [tags: "zetapush"])
+        self.delegate?.onConnectionClosedAdviceReconnect(self)
+    }
+    
     open func didSubscribeToChannel(_ client: CometdClient, channel: String) {
         log.debug("ClientHelper Subscribed to channel \(channel)", userInfo: [tags: "zetapush"])
         self.delegate?.onDidSubscribeToChannel(self, channel: channel)
@@ -327,7 +332,6 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     open func messageReceived(_ client: CometdClient, messageDict: NSDictionary, channel: String) {
         log.debug("ClientHelper messageReceived \(channel)", userInfo: [tags: "zetapush"])
         log.debug(messageDict, userInfo: [tags: "zetapush"])
-        
     }
     
 }

@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "ZetaPushSwift"
-  s.version      = "1.0.13"
+  s.version      = "1.0.14"
   s.summary      = "Swift client for ZetaPush"
 
   # This description is used to generate tags and improve search results.
@@ -135,7 +135,7 @@ Pod::Spec.new do |s|
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   s.dependency "Starscream", "~> 2.0"
   s.dependency "SwiftyJSON", "~> 3.1"
-  s.dependency "PromiseKit", "~> 4.0"
-  s.dependency "XCGLogger", "~> 5.0"
-  s.dependency "Gloss", "~> 1.2"
+  s.dependency "PromiseKit", "~> 4.3"
+  s.dependency "XCGLogger", "~> 5.0.1"
+  s.dependency "Gloss", "~> 2.0"
 end

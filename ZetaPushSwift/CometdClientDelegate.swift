@@ -21,6 +21,7 @@ public protocol CometdClientDelegate: NSObjectProtocol {
     func handshakeSucceeded(_ client:CometdClient, handshakeDict: NSDictionary)
     func handshakeFailed(_ client:CometdClient)
     func disconnectedFromServer(_ client:CometdClient)
+    func disconnectedAdviceReconnect(_ client:CometdClient)
     func connectionFailed(_ client:CometdClient)
     func didSubscribeToChannel(_ client:CometdClient, channel:String)
     func didUnsubscribeFromChannel(_ client:CometdClient, channel:String)
@@ -35,6 +36,7 @@ public extension CometdClientDelegate {
     func handshakeSucceeded(_ client:CometdClient, handshakeDict: NSDictionary){}
     func handshakeFailed(_ client:CometdClient){}
     func disconnectedFromServer(_ client:CometdClient){}
+    func disconnectedAdviceReconnect(_ client:CometdClient){}
     func connectionFailed(_ client:CometdClient){}
     func didSubscribeToChannel(_ client:CometdClient, channel:String){}
     func didUnsubscribeFromChannel(_ client:CometdClient, channel:String){}

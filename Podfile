@@ -10,5 +10,5 @@ target 'ZetaPushSwift' do
   pod "SwiftyJSON"
   pod "PromiseKit", "~> 4.3"
   pod "XCGLogger", "~> 5.0.1"
-  pod 'Gloss', '~> 1.2'
+  pod 'Gloss', '~> 2.0'
 end

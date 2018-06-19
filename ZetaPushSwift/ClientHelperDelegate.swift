@@ -13,6 +13,7 @@ public protocol ClientHelperDelegate: NSObjectProtocol {
     func onConnectionEstablished(_ client:ClientHelper)
     func onConnectionBroken(_ client:ClientHelper)
     func onConnectionClosed(_ client:ClientHelper)
+    func onConnectionClosedAdviceReconnect(_ client:ClientHelper)
     func onSuccessfulHandshake(_ client:ClientHelper)
     func onFailedHandshake(_ client:ClientHelper)
     func onDidSubscribeToChannel(_ client:ClientHelper, channel:String)
@@ -25,6 +26,7 @@ public extension ClientHelperDelegate {
     func onConnectionEstablished(_ client:ClientHelper){}
     func onConnectionBroken(_ client:ClientHelper){}
     func onConnectionClosed(_ client:ClientHelper){}
+    func onConnectionClosedAdviceReconnect(_ client:ClientHelper){}
     func onSuccessfulHandshake(_ client:ClientHelper){}
     func onFailedHandshake(_ client:ClientHelper){}
     func onDidSubscribeToChannel(_ client:ClientHelper, channel:String){}

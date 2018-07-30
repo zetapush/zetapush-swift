@@ -299,6 +299,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         self.delegate?.onConnectionBroken(self)
     }
     
+    @objc
     func connectionFailedTimer(timer: Timer){
         self.connect()
     }

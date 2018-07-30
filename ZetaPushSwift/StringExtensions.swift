@@ -8,9 +8,6 @@
 // Adapted from https://github.com/hamin/FayeSwift
 
 extension String {
-    subscript (i: Int) -> String {
-        return String(Array(self.characters)[i])
-    }
     
     // http://iosdevelopertips.com/swift-code/base64-encode-decode-swift.html
     func encodedString() -> String {

@@ -10,10 +10,10 @@ target 'ZetaPushSwift' do
 
   # Pods for ZetaPushSwift
   pod 'Starscream'
-  pod 'SwiftyJSON'
-  pod 'PromiseKit', '~> 6.3.4'
-  pod 'XCGLogger', '~> 6.0.4'
-  pod 'Gloss', '~> 2.0.1'
+  pod 'SwiftyJSON', '~> 3.1'
+  pod 'PromiseKit', '~> 6.3'
+  pod 'XCGLogger', '~> 6.0'
+  pod 'Gloss', '~> 2.0'
 end
 
 post_install do |installer|

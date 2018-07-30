@@ -69,7 +69,7 @@ open class ZetaPushService : NSObject {
     }
     
     open func publish(verb:String, parameters:[String:AnyObject]) -> Promise<NSDictionary> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             
             var sub: Subscription? = nil
             var subError: Subscription? = nil
@@ -77,17 +77,13 @@ open class ZetaPushService : NSObject {
             let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
                 self.clientHelper?.unsubscribe(sub!)
                 self.clientHelper?.unsubscribe(subError!)
-                
-                fulfill(messageDict)
-                
+                seal.fulfill(messageDict)
             }
             
             let channelBlockServiceError:ChannelSubscriptionBlock = {(messageDict) -> Void in
                 self.clientHelper?.unsubscribe(sub!)
                 self.clientHelper?.unsubscribe(subError!)
-                
-                reject(ZetaPushServiceError.genericFromDictionnary(messageDict))
-                
+                seal.reject(ZetaPushServiceError.genericFromDictionnary(messageDict))
             }
             
             sub = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.deploymentId!))!, block: channelBlockServiceCall)
@@ -98,7 +94,7 @@ open class ZetaPushService : NSObject {
     }
     
     open func publish<T : Glossy, U: Glossy>(verb:String, parameters:T) -> Promise<U> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             
             var sub: Subscription? = nil
             var subError: Subscription? = nil
@@ -108,10 +104,10 @@ open class ZetaPushService : NSObject {
                 self.clientHelper?.unsubscribe(subError!)
                 
                 guard let zpMessage = U(json: messageDict as! JSON) else {
-                    reject(ZetaPushServiceError.decodingError)
+                    seal.reject(ZetaPushServiceError.decodingError)
                     return
                 }
-                fulfill(zpMessage)
+                seal.fulfill(zpMessage)
                 
             }
             
@@ -119,7 +115,7 @@ open class ZetaPushService : NSObject {
                 self.clientHelper?.unsubscribe(sub!)
                 self.clientHelper?.unsubscribe(subError!)
                 
-                reject(ZetaPushServiceError.genericFromDictionnary(messageDict))
+                seal.reject(ZetaPushServiceError.genericFromDictionnary(messageDict))
                 
             }
             

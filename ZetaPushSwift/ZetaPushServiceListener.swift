@@ -9,11 +9,6 @@
 import Foundation
 import Gloss
 
-public struct VerbCallbackTuple<T: Glossy> {
-    let verb: String
-    let callback: ((T)->Void)?
-}
-
 public struct ModelBlockTuple {
     let model: CometdSubscriptionModel
     let block: ChannelSubscriptionBlock?
@@ -46,8 +41,8 @@ open class ZetaPushServiceListener{
     /**
      
      */
-    public func getModelBlock<T: Glossy>(_ subscription:VerbCallbackTuple<T>) -> ModelBlockTuple {
-        let channel = (self.clientHelper?.composeServiceChannel(subscription.verb, deploymentId: self.zetaPushService.deploymentId!))!
+    public func getModelBlock<T: Glossy>(verb: String, callback: @escaping (T)->Void) -> ModelBlockTuple {
+        let channel = (self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushService.deploymentId!))!
         let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper?.cometdClient?.cometdClientId)
         return ModelBlockTuple(model: model, block: {(messageDict: NSDictionary) -> Void in
             guard let zpMessage = T(json: messageDict as! JSON) else {
@@ -55,7 +50,7 @@ open class ZetaPushServiceListener{
                 self.onServiceError?(self.zetaPushService, ZetaPushServiceError.decodingError)
                 return
             }
-            subscription.callback?(zpMessage)
+            callback(zpMessage)
         })
     }
     /**

@@ -29,8 +29,8 @@ open class ZetaPushMacroListener{
     /**
      
      */
-    public func getModelBlock<T: Glossy>(_ subscription:VerbCallbackTuple<T>) -> ModelBlockTuple {
-        let channel = (self.clientHelper?.composeServiceChannel(subscription.verb, deploymentId: self.zetaPushMacroService.deploymentId!))!
+    public func getModelBlock<T: Glossy>(verb: String, callback: @escaping (T)->Void) -> ModelBlockTuple {
+        let channel = (self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!))!
         let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper?.cometdClient?.cometdClientId)
         return ModelBlockTuple(model: model, block: {(messageDict: NSDictionary) -> Void in
             if messageDict.object(forKey: "errors") != nil {
@@ -44,16 +44,12 @@ open class ZetaPushMacroListener{
                     }
                 }
             }
-            
             if let result = messageDict["result"] as? NSDictionary {
-                
                 guard let zpMessage = T(json: result as! JSON) else {
-                    
                     self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
                     return
                 }
-                
-                subscription.callback?(zpMessage)
+                callback(zpMessage)
             }
         })
     }

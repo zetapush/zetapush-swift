@@ -75,6 +75,7 @@ open class CometdSubscriptionModel {
         
         return [Bayeux.Channel.rawValue: bayeuxChannel.rawValue as AnyObject,
                 Bayeux.ClientId.rawValue: clientId as AnyObject,
+                Bayeux.Id.rawValue: id as AnyObject,
                 Bayeux.Subscription.rawValue: subscriptionUrl as AnyObject]
     }
 }

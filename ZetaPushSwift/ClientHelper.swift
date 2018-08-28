@@ -254,6 +254,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         self.wasConnected = self.connected;
         self.connected = true;
         if (!self.wasConnected && self.connected) {
+            _ = self.cometdClient?.pendingSubscriptionSchedule.isValid
             self.delegate?.onConnectionEstablished(self);
         }
     }

@@ -34,7 +34,6 @@ extension CometdClient {
                         self.cometdConnected = true;
                         self.connect()
                         self.subscribeQueuedSubscriptions()
-                        _ = pendingSubscriptionSchedule.isValid
                     } else {
                         self.delegate?.handshakeFailed(self)
                         self.cometdConnected = false;

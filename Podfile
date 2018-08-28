@@ -2,7 +2,7 @@
 # platform :ios, '9.0'
 platform :ios, '10.0'
 
-inhibit_all_warnings!
+# inhibit_all_warnings!
 
 target 'ZetaPushSwift' do
   # Comment this line if you're not using Swift and don't want to use dynamic frameworks
@@ -14,18 +14,21 @@ target 'ZetaPushSwift' do
   pod 'PromiseKit', '~> 6.3'
   pod 'XCGLogger', '~> 6.0'
   pod 'Gloss', '~> 2.0'
+  target 'ZetaPushSwiftTests' do
+      inherit! :search_paths
+  end
 end
 
 post_install do |installer|
     
     installer.pods_project.build_configurations.each do |config|
-        config.build_settings['SWIFT_SUPPRESS_WARNINGS'] = 'YES'
+        # config.build_settings['SWIFT_SUPPRESS_WARNINGS'] = 'YES'
         config.build_settings['SWIFT_VERSION'] = '4'
     end
     
     installer.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
-            config.build_settings['SWIFT_SUPPRESS_WARNINGS'] = 'YES'
+            # config.build_settings['SWIFT_SUPPRESS_WARNINGS'] = 'YES'
             config.build_settings['SWIFT_VERSION'] = '4'
         end
     end

@@ -12,6 +12,9 @@
 		35DE6ECF1EA8A21900E26BC1 /* ZetaPushServicePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE6ECE1EA8A21900E26BC1 /* ZetaPushServicePublisher.swift */; };
 		35DE6ED51EAE385200E26BC1 /* ZetaPushMacroListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE6ED41EAE385200E26BC1 /* ZetaPushMacroListener.swift */; };
 		35DE6ED71EAE386200E26BC1 /* ZetaPushServiceListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE6ED61EAE386200E26BC1 /* ZetaPushServiceListener.swift */; };
+		4146FCE421354AA900D20C66 /* ZetaPushSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4146FCE321354AA900D20C66 /* ZetaPushSwiftTests.swift */; };
+		4146FCE621354AA900D20C66 /* ZetaPushSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5896E241E84121A0037800F /* ZetaPushSwift.framework */; };
+		47F1D6F81F0AB8AFE98347A6 /* Pods_ZetaPushSwiftTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D0A42DF3FC1533FF9235DCA /* Pods_ZetaPushSwiftTests.framework */; };
 		8A2922FA0830C9E8F8135C5A /* Pods_ZetaPushSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1749803BD13F37ED0A8AEB45 /* Pods_ZetaPushSwift.framework */; };
 		C53F8E491E93E83700D5C62C /* ZetaPushSmartClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53F8E481E93E83700D5C62C /* ZetaPushSmartClient.swift */; };
 		C53F8E4B1E93E86D00D5C62C /* ZetaPushWeakClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53F8E4A1E93E86D00D5C62C /* ZetaPushWeakClient.swift */; };
@@ -38,14 +41,30 @@
 		C5F9C0D01E8D2E47000B8ECF /* ConnectionStatusDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5F9C0CE1E8D2E47000B8ECF /* ConnectionStatusDelegate.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4146FCE721354AA900D20C66 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C5896E1B1E8412190037800F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C5896E231E84121A0037800F;
+			remoteInfo = ZetaPushSwift;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		1749803BD13F37ED0A8AEB45 /* Pods_ZetaPushSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZetaPushSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D0A42DF3FC1533FF9235DCA /* Pods_ZetaPushSwiftTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZetaPushSwiftTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		35AFD5E91F47216A00427AB9 /* ClientHelperDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientHelperDelegate.swift; sourceTree = "<group>"; };
 		35DE6ECC1EA8A1DE00E26BC1 /* ZetaPushMacroPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushMacroPublisher.swift; sourceTree = "<group>"; };
 		35DE6ECE1EA8A21900E26BC1 /* ZetaPushServicePublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushServicePublisher.swift; sourceTree = "<group>"; };
 		35DE6ED41EAE385200E26BC1 /* ZetaPushMacroListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushMacroListener.swift; sourceTree = "<group>"; };
 		35DE6ED61EAE386200E26BC1 /* ZetaPushServiceListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushServiceListener.swift; sourceTree = "<group>"; };
+		4146FCE121354AA900D20C66 /* ZetaPushSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZetaPushSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4146FCE321354AA900D20C66 /* ZetaPushSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZetaPushSwiftTests.swift; sourceTree = "<group>"; };
+		4146FCE521354AA900D20C66 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		623B68CCE3F4C486F2BB54D4 /* Pods-ZetaPushSwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZetaPushSwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZetaPushSwift/Pods-ZetaPushSwift.release.xcconfig"; sourceTree = "<group>"; };
+		7C3009DC39FD7E75D7A822E0 /* Pods-ZetaPushSwiftTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZetaPushSwiftTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZetaPushSwiftTests/Pods-ZetaPushSwiftTests.debug.xcconfig"; sourceTree = "<group>"; };
+		93F0CE9053BBF0E0E9B7E1EC /* Pods-ZetaPushSwiftTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZetaPushSwiftTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZetaPushSwiftTests/Pods-ZetaPushSwiftTests.release.xcconfig"; sourceTree = "<group>"; };
 		C53F8E481E93E83700D5C62C /* ZetaPushSmartClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushSmartClient.swift; sourceTree = "<group>"; };
 		C53F8E4A1E93E86D00D5C62C /* ZetaPushWeakClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushWeakClient.swift; sourceTree = "<group>"; };
 		C53F8E4C1E93E88E00D5C62C /* ZetaPushMacroService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZetaPushMacroService.swift; sourceTree = "<group>"; };
@@ -75,6 +94,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4146FCDE21354AA900D20C66 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4146FCE621354AA900D20C66 /* ZetaPushSwift.framework in Frameworks */,
+				47F1D6F81F0AB8AFE98347A6 /* Pods_ZetaPushSwiftTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C5896E201E84121A0037800F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -91,14 +119,26 @@
 			children = (
 				E327A1F3727E6CF61C97EADC /* Pods-ZetaPushSwift.debug.xcconfig */,
 				623B68CCE3F4C486F2BB54D4 /* Pods-ZetaPushSwift.release.xcconfig */,
+				7C3009DC39FD7E75D7A822E0 /* Pods-ZetaPushSwiftTests.debug.xcconfig */,
+				93F0CE9053BBF0E0E9B7E1EC /* Pods-ZetaPushSwiftTests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		4146FCE221354AA900D20C66 /* ZetaPushSwiftTests */ = {
+			isa = PBXGroup;
+			children = (
+				4146FCE321354AA900D20C66 /* ZetaPushSwiftTests.swift */,
+				4146FCE521354AA900D20C66 /* Info.plist */,
+			);
+			path = ZetaPushSwiftTests;
 			sourceTree = "<group>";
 		};
 		7D2ADD18D0DB2007B0C7171F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				1749803BD13F37ED0A8AEB45 /* Pods_ZetaPushSwift.framework */,
+				1D0A42DF3FC1533FF9235DCA /* Pods_ZetaPushSwiftTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -127,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				C5896E261E84121A0037800F /* ZetaPushSwift */,
+				4146FCE221354AA900D20C66 /* ZetaPushSwiftTests */,
 				C5896E251E84121A0037800F /* Products */,
 				4122379FA7B9F86FDE9BB33D /* Pods */,
 				7D2ADD18D0DB2007B0C7171F /* Frameworks */,
@@ -137,6 +178,7 @@
 			isa = PBXGroup;
 			children = (
 				C5896E241E84121A0037800F /* ZetaPushSwift.framework */,
+				4146FCE121354AA900D20C66 /* ZetaPushSwiftTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -179,6 +221,26 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		4146FCE021354AA900D20C66 /* ZetaPushSwiftTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4146FCEB21354AA900D20C66 /* Build configuration list for PBXNativeTarget "ZetaPushSwiftTests" */;
+			buildPhases = (
+				40E34304A8E5B10D614E4D37 /* [CP] Check Pods Manifest.lock */,
+				4146FCDD21354AA900D20C66 /* Sources */,
+				4146FCDE21354AA900D20C66 /* Frameworks */,
+				4146FCDF21354AA900D20C66 /* Resources */,
+				AF68139119EDBEDD30C288F3 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4146FCE821354AA900D20C66 /* PBXTargetDependency */,
+			);
+			name = ZetaPushSwiftTests;
+			productName = ZetaPushSwiftTests;
+			productReference = 4146FCE121354AA900D20C66 /* ZetaPushSwiftTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		C5896E231E84121A0037800F /* ZetaPushSwift */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C5896E2C1E84121A0037800F /* Build configuration list for PBXNativeTarget "ZetaPushSwift" */;
@@ -204,9 +266,15 @@
 		C5896E1B1E8412190037800F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0940;
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = ZetaPush;
 				TargetAttributes = {
+					4146FCE021354AA900D20C66 = {
+						CreatedOnToolsVersion = 9.4.1;
+						DevelopmentTeam = 487YKHVB4E;
+						ProvisioningStyle = Automatic;
+					};
 					C5896E231E84121A0037800F = {
 						CreatedOnToolsVersion = 8.2.1;
 						LastSwiftMigration = 0820;
@@ -227,11 +295,19 @@
 			projectRoot = "";
 			targets = (
 				C5896E231E84121A0037800F /* ZetaPushSwift */,
+				4146FCE021354AA900D20C66 /* ZetaPushSwiftTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4146FCDF21354AA900D20C66 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C5896E221E84121A0037800F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -260,9 +336,71 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		40E34304A8E5B10D614E4D37 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ZetaPushSwiftTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AF68139119EDBEDD30C288F3 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-ZetaPushSwiftTests/Pods-ZetaPushSwiftTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Gloss/Gloss.framework",
+				"${BUILT_PRODUCTS_DIR}/ObjcExceptionBridging/ObjcExceptionBridging.framework",
+				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/XCGLogger/XCGLogger.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Gloss.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjcExceptionBridging.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XCGLogger.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ZetaPushSwiftTests/Pods-ZetaPushSwiftTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4146FCDD21354AA900D20C66 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4146FCE421354AA900D20C66 /* ZetaPushSwiftTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C5896E1F1E84121A0037800F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -299,7 +437,59 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		4146FCE821354AA900D20C66 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C5896E231E84121A0037800F /* ZetaPushSwift */;
+			targetProxy = 4146FCE721354AA900D20C66 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		4146FCE921354AA900D20C66 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7C3009DC39FD7E75D7A822E0 /* Pods-ZetaPushSwiftTests.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 487YKHVB4E;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = ZetaPushSwiftTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.zetapush.ZetaPushSwiftTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4146FCEA21354AA900D20C66 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 93F0CE9053BBF0E0E9B7E1EC /* Pods-ZetaPushSwiftTests.release.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 487YKHVB4E;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = ZetaPushSwiftTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.zetapush.ZetaPushSwiftTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		C5896E2A1E84121A0037800F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -461,6 +651,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4146FCEB21354AA900D20C66 /* Build configuration list for PBXNativeTarget "ZetaPushSwiftTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4146FCE921354AA900D20C66 /* Debug */,
+				4146FCEA21354AA900D20C66 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C5896E1E1E8412190037800F /* Build configuration list for PBXProject "ZetaPushSwift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -26,7 +26,40 @@ open class ZetaPushMacroListener{
     public convenience init(_ clientHelper: ClientHelper){
         self.init(clientHelper, deploymentId: zetaPushDefaultConfig.macroDeployementId)
     }
-    
+    /**
+     
+     */
+    public func subscribe<T: Glossy>(_ subscriptions: [VerbCallbackTuple<T>]) {
+        let tuples: [ModelBlockTuple] = subscriptions.map { (arg: VerbCallbackTuple<T>) -> ModelBlockTuple in
+            let channel = (self.clientHelper?.composeServiceChannel(arg.verb, deploymentId: self.zetaPushMacroService.deploymentId!))!
+            let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper?.cometdClient?.cometdClientId)
+            return ModelBlockTuple(model: model, block: {(messageDict: NSDictionary) -> Void in
+                if messageDict.object(forKey: "errors") != nil {
+                    if let errors = messageDict["errors"] as? NSArray {
+                        if errors.count > 0 {
+                            if let error = errors[0] as? NSDictionary {
+                                self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.genericFromDictionnary(error))
+                            } else {
+                                self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.unknowError)
+                            }
+                        }
+                    }
+                }
+                
+                if let result = messageDict["result"] as? NSDictionary {
+                    
+                    guard let zpMessage = T(json: result as! JSON) else {
+                        
+                        self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
+                        return
+                    }
+                    
+                    arg.callback?(zpMessage)
+                }
+            })
+        }
+        _ = self.clientHelper?.subscribe(tuples);
+    }
     /*
      Generic Subscribe with a Generic parameter
      */

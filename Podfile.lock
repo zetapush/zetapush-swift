@@ -3,14 +3,14 @@ PODS:
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
-  - PromiseKit (6.3.4):
-    - PromiseKit/CorePromise (= 6.3.4)
-    - PromiseKit/Foundation (= 6.3.4)
-    - PromiseKit/UIKit (= 6.3.4)
-  - PromiseKit/CorePromise (6.3.4)
-  - PromiseKit/Foundation (6.3.4):
+  - PromiseKit (6.4.0):
+    - PromiseKit/CorePromise (= 6.4.0)
+    - PromiseKit/Foundation (= 6.4.0)
+    - PromiseKit/UIKit (= 6.4.0)
+  - PromiseKit/CorePromise (6.4.0)
+  - PromiseKit/Foundation (6.4.0):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (6.3.4):
+  - PromiseKit/UIKit (6.4.0):
     - PromiseKit/CorePromise
   - Starscream (3.0.5)
   - SwiftyJSON (3.1.4)
@@ -38,7 +38,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Gloss: 1e8743f8de1fbe14a97f220ff901cba91ae5f8f8
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
-  PromiseKit: e1425568123ec844a944c93f2bcb29d511d39cf5
+  PromiseKit: ae3616f45d7bb9bf4ff1e91abc9b7a8c48a340e0
   Starscream: faf918b2f2eff7d5dd21180646bf015a669673bd
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
   XCGLogger: 4fc1bc0bdd5828cb8dc8da7a843536cda1bea8f3

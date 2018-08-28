@@ -129,6 +129,21 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         }
         
     }
+
+    open func subscribe(_ tuples: [ModelBlockTuple]) {
+        guard let client = self.cometdClient else {
+            return
+        }
+        // Convert model to subscription
+        let models = tuples.map(client.mapModelToSubscription).compactMap { (state, _) -> CometdSubscriptionModel? in
+            switch state {
+                case .subscribingTo(let model): return model
+                default: return nil
+            }
+        }
+        // Batch subscriptions
+        client.subscribe(models)
+    }
     
     open func subscribe(_ channel:String, block:ChannelSubscriptionBlock?=nil) -> Subscription? {
         let (_, sub) = self.cometdClient!.subscribeToChannel(channel, block: block)

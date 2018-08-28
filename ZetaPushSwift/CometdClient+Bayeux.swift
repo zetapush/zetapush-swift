@@ -156,6 +156,18 @@ extension CometdClient {
         }
     }
     
+    func subscribe(_ models:[CometdSubscriptionModel]) {
+        writeOperationQueue.sync { [unowned self] in
+            let objects: [String] = models.compactMap({ (model) -> String? in
+                self.pendingSubscriptions.append(model)
+                return try? model.jsonString()
+            })
+            let json = "[" + objects.joined(separator: ",") + "]"
+            self.log.verbose("CometdClient subscribe \(json)")
+            self.transport?.writeString(json)
+        }
+    }
+    
     // Bayeux Subscribe
     // "channel": "/meta/subscribe",
     // "clientId": "Un1q31d3nt1f13r",

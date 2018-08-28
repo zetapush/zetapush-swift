@@ -162,6 +162,39 @@ open class CometdClient : TransportDelegate {
         }
     }
     
+    open func mapModelToSubscription(tuple: ModelBlockTuple) -> (CometdSubscriptionState, Subscription?) {
+        let model = tuple.model
+        var sub = Subscription(callback:nil, channel: model.subscriptionUrl, id: 0)
+        if let block = tuple.block {
+            
+            if self.channelSubscriptionBlocks[model.subscriptionUrl] == nil
+            {
+                self.channelSubscriptionBlocks[model.subscriptionUrl] = []
+            }
+            
+            sub.callback = block
+            sub.id = self.channelSubscriptionBlocks[model.subscriptionUrl]!.count
+            
+            self.channelSubscriptionBlocks[model.subscriptionUrl]!.append(sub)
+        }
+        // If channel is already subscribed
+        if self.isSubscribedToChannel(model.subscriptionUrl) {
+            log.info("CometdClient subscribeToChannel intial subscription")
+            return (.subscribed(model), sub)
+        }
+        // If channel is already in pending status
+        if self.pendingSubscriptions.contains(where: { $0 == model }) {
+            log.info("CometdClient subscribeToChannel pending subscription")
+            return (.pending(model), sub)
+        }
+        // If connection is not yet established
+        if self.cometdConnected == false {
+            self.queuedSubscriptions.append(model)
+            return (.queued(model), sub)
+        }
+        return (.subscribingTo(model), sub)
+    }
+    
     open func subscribeToChannel(_ model:CometdSubscriptionModel, block:ChannelSubscriptionBlock?=nil) -> (CometdSubscriptionState, Subscription?) {
         // Initial suscription
         guard !self.isSubscribedToChannel(model.subscriptionUrl) else {

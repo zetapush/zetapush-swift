@@ -9,6 +9,16 @@
 import Foundation
 import Gloss
 
+public struct VerbCallbackTuple<T: Glossy> {
+    let verb: String
+    let callback: ((T)->Void)?
+}
+
+public struct ModelBlockTuple {
+    let model: CometdSubscriptionModel
+    let block: ChannelSubscriptionBlock?
+}
+
 open class ZetaPushServiceListener{
     public var clientHelper: ClientHelper?
     var macroChannelError: String
@@ -32,6 +42,24 @@ open class ZetaPushServiceListener{
         _ = self.clientHelper?.subscribe(self.macroChannelError, block: channelBlockMacroError)
         
         self.register()
+    }
+    /**
+     
+     */
+    public func subscribe<T: Glossy>(_ subscriptions: [VerbCallbackTuple<T>]) {
+        let tuples: [ModelBlockTuple] = subscriptions.map { (arg: VerbCallbackTuple<T>) -> ModelBlockTuple in
+            let channel = (self.clientHelper?.composeServiceChannel(arg.verb, deploymentId: self.zetaPushService.deploymentId!))!
+            let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper?.cometdClient?.cometdClientId)
+            return ModelBlockTuple(model: model, block: {(messageDict: NSDictionary) -> Void in
+                guard let zpMessage = T(json: messageDict as! JSON) else {
+                    
+                    self.onServiceError?(self.zetaPushService, ZetaPushServiceError.decodingError)
+                    return
+                }
+                arg.callback?(zpMessage)
+            })
+        }
+        _ = self.clientHelper?.subscribe(tuples);
     }
     /*
      Generic Subscribe with a Generic parameter

@@ -171,7 +171,7 @@ extension CometdClient {
             } catch CometdSubscriptionModelError.conversationError {
                 
             } catch CometdSubscriptionModelError.clientIdNotValid
-                where self.cometdClientId?.characters.count > 0 {
+                where self.cometdClientId?.count > 0 {
                     let model = model
                     model.clientId = self.cometdClientId
                     self.subscribe(model)

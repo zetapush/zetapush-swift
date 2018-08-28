@@ -59,34 +59,34 @@ internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDe
     }
     
     // MARK: Websocket Delegate
-    internal func websocketDidConnect(socket: WebSocket) {
+    internal func websocketDidConnect(socket: WebSocketClient) {
         self.delegate?.didConnect()
     }
     
-    internal func websocketDidDisconnect(socket: WebSocket, error: NSError?) {
+    internal func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
         if error == nil {
-            self.delegate?.didDisconnect(NSError(error: .lostConnection))
+            self.delegate?.didDisconnect(CometdSocketError.lostConnection)
         } else {
             self.delegate?.didFailConnection(error)
         }
     }
     
-    internal func websocketDidReceiveMessage(socket: WebSocket, text: String) {
+    internal func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
         self.delegate?.didReceiveMessage(text)
     }
     
     // MARK: TODO
-    internal func websocketDidReceiveData(socket: WebSocket, data: Data) {
+    internal func websocketDidReceiveData(socket: WebSocketClient, data: Data) {
         log.debug("Cometd: Received data: \(data.count)")
         //self.socket.writeData(data)
     }
     
     // MARK: WebSocket Pong Delegate
-    internal func websocketDidReceivePong(_ socket: WebSocket) {
+    internal func websocketDidReceivePong(_ socket: WebSocketClient) {
         self.delegate?.didReceivePong()
     }
     
-    func websocketDidReceivePong(socket: WebSocket, data: Data?) {
+    func websocketDidReceivePong(socket: WebSocketClient, data: Data?) {
         self.delegate?.didReceivePong()
     }
 }

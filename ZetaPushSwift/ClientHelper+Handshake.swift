@@ -91,7 +91,7 @@ open class CredentialsHanshake : AbstractHandshake {
 open class Authentication {
     
     open static func createHandshake(_ login: String, password: String, deploymentId: String, authType: String) -> AbstractHandshake {
-        if password.characters.count == 0 {
+        if password.isEmpty {
             return TokenHandshake(token: login, deploymentId: deploymentId, authType: authType)
         } else {
             return CredentialsHanshake(login: login, password: password, deploymentId: deploymentId, authType: authType)

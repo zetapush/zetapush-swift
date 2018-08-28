@@ -58,7 +58,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         
         // Handle resource
         let defaults = UserDefaults.standard
-        if resource.characters.count == 0 {
+        if resource.isEmpty {
             if let storedResource = defaults.string(forKey: zetaPushDefaultKeys.resource) {
                 self.resource = storedResource
             } else {
@@ -223,11 +223,11 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     }
     
     open func isWeaklyAuthenticated() -> Bool{
-        return self.publicToken.characters.count > 0
+        return !self.publicToken.isEmpty
     }
     
     open func isStronglyAuthenticated() -> Bool{
-        return !self.isWeaklyAuthenticated() && self.token.characters.count > 0
+        return !self.isWeaklyAuthenticated() && !self.token.isEmpty
     }
     
     /*
@@ -299,6 +299,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         self.delegate?.onConnectionBroken(self)
     }
     
+    @objc
     func connectionFailedTimer(timer: Timer){
         self.connect()
     }

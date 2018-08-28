@@ -46,11 +46,11 @@ open class ZetaPushSmartClient: ClientHelper {
                 stringPublicToken = storedPublicToken
             }
         }
-        if (stringPublicToken.characters.count > 0) {
+        if !stringPublicToken.isEmpty {
             // The user is weakly authenticated and the token must be present
             super.init(apiUrl: zetaPushDefaultConfig.apiUrl, sandboxId: sandboxId, authentication: Authentication.weak(stringToken, deploymentId: weakDeploymentId), logLevel: logLevel)
         } else {
-            if (stringToken.characters.count > 0){
+            if !stringToken.isEmpty {
                 // The user is strongly (with a simple authent) authenticated and the token is present
                 super.init(apiUrl: zetaPushDefaultConfig.apiUrl, sandboxId: sandboxId, authentication: Authentication.simple(stringToken, password:"", deploymentId: simpleDeploymentId), logLevel: logLevel)
             } else {

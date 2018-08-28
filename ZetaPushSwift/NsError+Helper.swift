@@ -9,17 +9,18 @@
 
 import Foundation
 
-public enum CometdSocketError {
-    case lostConnection, transportWrite
+public enum CometdSocketError: Error {
+    case lostConnection
+    case transportWrite
 }
 
-public extension NSError {
-    
+//public extension Error {
+
     // MARK:
     // MARK: Error
     
     /// Helper to create a error object for cometd realted issues
-    convenience init(error: CometdSocketError) {
-        self.init(domain: "com.hamin.cometdswift", code: 10000, userInfo: nil)
-    }
-}
+//    convenience init(error: CometdSocketError) {
+//        self.init(domain: "com.hamin.cometdswift", code: 10000, userInfo: nil)
+//    }
+//}

@@ -18,22 +18,22 @@ extension CometdClient {
         self.handshake(self.handshakeFields!)
     }
     
-    public func didDisconnect(_ error: NSError?) {
+    public func didDisconnect(_ error: Error?) {
         log.debug("CometdClient didDisconnect")
         self.delegate?.disconnectedFromServer(self)
         self.connectionInitiated = false
         self.cometdConnected = false
     }
     
-    public func didFailConnection(_ error: NSError?) {
+    public func didFailConnection(_ error: Error?) {
         log.warning("CometdClient didFailConnection")
         self.delegate?.connectionFailed(self)
         self.connectionInitiated = false
         self.cometdConnected = false
     }
     
-    public func didWriteError(_ error: NSError?) {
-        self.delegate?.cometdClientError(self, error: error ?? NSError(error: .transportWrite))
+    public func didWriteError(_ error: Error?) {
+        self.delegate?.cometdClientError(self, error: error ?? CometdSocketError.transportWrite)
     }
     
     public func didReceiveMessage(_ text: String) {

@@ -188,7 +188,7 @@ open class ZetaPushMacroService : NSObject {
         Call return a promise
      */
     open func call(verb:String, parameters:[String:AnyObject]) -> Promise<NSDictionary> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             let requestId = UUID().uuidString
             
             let dict:[String:AnyObject] = [
@@ -214,15 +214,15 @@ open class ZetaPushMacroService : NSObject {
                 self.clientHelper?.unsubscribe(sub!)
                 
                 if let result = messageDict["result"] as? NSDictionary {
-                    fulfill(result)
+                    seal.fulfill(result)
                 }
                 if messageDict.object(forKey: "errors") != nil {
                     if let errors = messageDict["errors"] as? NSArray {
                         if errors.count > 0 {
                              if let error = errors[0] as? NSDictionary {
-                                reject(ZetaPushMacroError.genericFromDictionnary(error))
+                                seal.reject(ZetaPushMacroError.genericFromDictionnary(error))
                              } else {
-                                reject(ZetaPushMacroError.unknowError)
+                                seal.reject(ZetaPushMacroError.unknowError)
                              }
                         }
                     }
@@ -238,7 +238,7 @@ open class ZetaPushMacroService : NSObject {
     }
     
     open func call<T : Glossy, U: AbstractMacroCompletion>(verb:String, parameters:T) -> Promise<U> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             
             let requestId = UUID().uuidString
             
@@ -267,22 +267,22 @@ open class ZetaPushMacroService : NSObject {
                     
                     guard let zpMessage = U.resultType(json: result as! JSON) else {
                         
-                        reject(ZetaPushMacroError.decodingError)
+                        seal.reject(ZetaPushMacroError.decodingError)
                         
                         return
                     }
                     
                     let completion = U(result: zpMessage, name: verb, requestId: requestId)
                     
-                    fulfill(completion)
+                    seal.fulfill(completion)
                 }
                 if messageDict.object(forKey: "errors") != nil {
                     if let errors = messageDict["errors"] as? NSArray {
                         if errors.count > 0 {
                             if let error = errors[0] as? NSDictionary {
-                                reject(ZetaPushMacroError.genericFromDictionnary(error))
+                                seal.reject(ZetaPushMacroError.genericFromDictionnary(error))
                             } else {
-                                reject(ZetaPushMacroError.unknowError)
+                                seal.reject(ZetaPushMacroError.unknowError)
                             }
                         }
                     }
@@ -298,7 +298,7 @@ open class ZetaPushMacroService : NSObject {
     }
     
     open func call<U: AbstractMacroCompletion>(verb:String) -> Promise<U> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             
             let requestId = UUID().uuidString
             
@@ -326,22 +326,22 @@ open class ZetaPushMacroService : NSObject {
                     
                     guard let zpMessage = U.resultType(json: result as! JSON) else {
                         
-                        reject(ZetaPushMacroError.decodingError)
+                        seal.reject(ZetaPushMacroError.decodingError)
                         
                         return
                     }
                     
                     let completion = U(result: zpMessage, name: verb, requestId: requestId)
                     
-                    fulfill(completion)
+                    seal.fulfill(completion)
                 }
                 if messageDict.object(forKey: "errors") != nil {
                     if let errors = messageDict["errors"] as? NSArray {
                         if errors.count > 0 {
                             if let error = errors[0] as? NSDictionary {
-                                reject(ZetaPushMacroError.genericFromDictionnary(error))
+                                seal.reject(ZetaPushMacroError.genericFromDictionnary(error))
                             } else {
-                                reject(ZetaPushMacroError.unknowError)
+                                seal.reject(ZetaPushMacroError.unknowError)
                             }
                         }
                     }

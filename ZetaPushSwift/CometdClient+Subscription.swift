@@ -53,9 +53,8 @@ extension CometdClient {
     func receive(_ message: String) {
         readOperationQueue.sync { [unowned self] in
             if let jsonData = message.data(using: String.Encoding.utf8, allowLossyConversion: false) {
-                if let json = try? JSON(data: jsonData) {
-                    self.parseCometdMessage(json.arrayValue)
-                }
+                let json = JSON(data: jsonData)
+                self.parseCometdMessage(json.arrayValue)
             }
         }
     }

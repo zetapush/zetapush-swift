@@ -15,7 +15,7 @@ public struct ModelBlockTuple {
 }
 
 open class ZetaPushServiceListener{
-    public var clientHelper: ClientHelper
+    public let clientHelper: ClientHelper
     var macroChannelError: String
     public var zetaPushService: ZetaPushService
     open var onServiceError: ZPServiceErrorBlock?
@@ -41,7 +41,7 @@ open class ZetaPushServiceListener{
     ///
     public func getModelBlock<T: Glossy>(verb: String, callback: @escaping (T) -> Void) -> ModelBlockTuple {
         let channel: String = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushService.deploymentId!)
-        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient?.cometdClientId)
+        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient.cometdClientId)
         return ModelBlockTuple(model: model, block: {(messageDict: NSDictionary) -> Void in
             guard let zpMessage: T = self.parse(messageDict: messageDict) else {
                 self.onServiceError?(self.zetaPushService, ZetaPushServiceError.decodingError)
@@ -54,7 +54,7 @@ open class ZetaPushServiceListener{
     ///
     public func getModelBlock<T: Glossy>(verb: String, callback: @escaping ([T]) -> Void) -> ModelBlockTuple {
         let channel: String = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushService.deploymentId!)
-        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient?.cometdClientId)
+        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient.cometdClientId)
         return ModelBlockTuple(model: model, block: { (messageDict: NSDictionary) -> Void in
             guard let zpMessage: [T] = self.parse(messageDict: messageDict) else {
                 self.onServiceError?(self.zetaPushService, ZetaPushServiceError.decodingError)
@@ -67,7 +67,7 @@ open class ZetaPushServiceListener{
     ///
     public func getModelBlock<T: NSDictionary>(verb: String, callback: @escaping (T) -> Void) -> ModelBlockTuple {
         let channel: String = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushService.deploymentId!)
-        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient?.cometdClientId)
+        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient.cometdClientId)
         return ModelBlockTuple(model: model, block: { (messageDict: NSDictionary) -> Void in
             guard let zpMessage: T = self.parse(messageDict: messageDict) else {
                 self.onServiceError?(self.zetaPushService, ZetaPushServiceError.decodingError)

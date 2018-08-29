@@ -11,7 +11,7 @@ import Gloss
 
 open class ZetaPushMacroListener {
     
-    public var clientHelper: ClientHelper
+    public let clientHelper: ClientHelper
     public var zetaPushMacroService: ZetaPushMacroService
     open var onMacroError : ZPMacroServiceErrorBlock?
     
@@ -32,7 +32,7 @@ open class ZetaPushMacroListener {
      */
     public func getModelBlock<T: Glossy>(verb: String, callback: @escaping (T) -> Void) -> ModelBlockTuple {
         let channel = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!)
-        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient?.cometdClientId)
+        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient.cometdClientId)
         return ModelBlockTuple(model: model, block: { (messageDict: NSDictionary) -> Void in
 
             self.handleMacroErrors(from: messageDict)
@@ -46,7 +46,7 @@ open class ZetaPushMacroListener {
 
     public func getModelBlock<T: Glossy>(verb: String, callback: @escaping ([T]) -> Void) -> ModelBlockTuple {
         let channel = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!)
-        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient?.cometdClientId)
+        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient.cometdClientId)
         return ModelBlockTuple(model: model, block: {(messageDict: NSDictionary) -> Void in
 
             self.handleMacroErrors(from: messageDict)
@@ -60,7 +60,7 @@ open class ZetaPushMacroListener {
 
     public func getModelBlock<T: AbstractMacroCompletion>(verb: String, callback: @escaping (T) -> Void) -> ModelBlockTuple {
         let channel = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!)
-        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient?.cometdClientId)
+        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient.cometdClientId)
         return ModelBlockTuple(model: model, block: {(messageDict: NSDictionary) -> Void in
             
             self.handleMacroErrors(from: messageDict)
@@ -74,7 +74,7 @@ open class ZetaPushMacroListener {
 
     public func getModelBlock<T: NSDictionary>(verb: String, callback: @escaping (T) -> Void) -> ModelBlockTuple {
         let channel = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!)
-        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient?.cometdClientId)
+        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient.cometdClientId)
         return ModelBlockTuple(model: model, block: {(messageDict: NSDictionary) -> Void in
             
             self.handleMacroErrors(from: messageDict)

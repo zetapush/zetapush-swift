@@ -34,7 +34,7 @@ open class ZetaPushServiceListener{
         self.zetaPushService = ZetaPushService(clientHelper, deploymentId: deploymentId)
         
         self.macroChannelError = "/service/" + self.clientHelper!.getSandboxId() + "/" + deploymentId + "/" + "error"
-        _ = self.clientHelper?.subscribe(self.macroChannelError, block: channelBlockMacroError)
+        self.clientHelper?.subscribe(self.macroChannelError, block: channelBlockMacroError)
         
         self.register()
     }
@@ -77,7 +77,7 @@ open class ZetaPushServiceListener{
             
         }
         
-        _ = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushService.deploymentId!))!, block: channelBlockServiceCall)
+        self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushService.deploymentId!))!, block: channelBlockServiceCall)
         
     }
     /*
@@ -98,7 +98,7 @@ open class ZetaPushServiceListener{
             
         }
         
-        _ = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushService.deploymentId!))!, block: channelBlockServiceCall)
+        self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushService.deploymentId!))!, block: channelBlockServiceCall)
         
     }
     /*
@@ -112,7 +112,7 @@ open class ZetaPushServiceListener{
             
         }
         
-        _ = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushService.deploymentId!))!, block: channelBlockServiceCall)
+        self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushService.deploymentId!))!, block: channelBlockServiceCall)
         
     }
     

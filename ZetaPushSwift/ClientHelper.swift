@@ -145,6 +145,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         client.subscribe(models)
     }
     
+    @discardableResult
     open func subscribe(_ channel:String, block:ChannelSubscriptionBlock?=nil) -> Subscription? {
         let (_, sub) = self.cometdClient!.subscribeToChannel(channel, block: block)
         
@@ -292,7 +293,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
             }
             self.subscriptionQueue.removeAll()
             for sub in tempArray {
-                _ = self.subscribe(sub.channel, block: sub.callback)
+                self.subscribe(sub.channel, block: sub.callback)
             }
         }
         firstHandshakeFlag = false

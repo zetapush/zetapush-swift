@@ -129,13 +129,13 @@ open class ZetaPushMacroService : NSObject {
         
         // Subscribe to completed macro channel
         self.macroChannel = "/service/" + self.clientHelper!.getSandboxId() + "/" + self.deploymentId! + "/" + "completed"
-        _ = self.clientHelper?.subscribe(self.macroChannel!, block: channelBlockMacroCompleted)
+        self.clientHelper?.subscribe(self.macroChannel!, block: channelBlockMacroCompleted)
         
         self.macroChannelError = "/service/" + self.clientHelper!.getSandboxId() + "/" + self.deploymentId! + "/" + "error"
-        _ = self.clientHelper?.subscribe(self.macroChannelError!, block: channelBlockMacroError)
+        self.clientHelper?.subscribe(self.macroChannelError!, block: channelBlockMacroError)
         
         self.macroChannelTrace = "/service/" + self.clientHelper!.getSandboxId() + "/" + self.deploymentId! + "/" + "trace"
-        _ = self.clientHelper?.subscribe(self.macroChannelTrace!, block: channelBlockMacroTrace)
+        self.clientHelper?.subscribe(self.macroChannelTrace!, block: channelBlockMacroTrace)
         
     }
     

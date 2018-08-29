@@ -89,7 +89,7 @@ open class ZetaPushMacroListener {
 
     
     public func subscribe(_ tuples: [ModelBlockTuple]) {
-        self.clientHelper.subscribe(tuples);
+        self.clientHelper.subscribe(tuples)
     }
     
     /// Generic Subscribe with a Generic parameter

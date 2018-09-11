@@ -128,7 +128,9 @@ extension CometdClient {
     // "connectionType": "long-polling"
     func connect() {
         writeOperationQueue.sync { [unowned self] in
+            let messageId = self.nextMessageId()
             let dict:[String:AnyObject] = [
+                Bayeux.Id.rawValue: messageId as AnyObject,
                 Bayeux.Channel.rawValue: BayeuxChannel.Connect.rawValue as AnyObject,
                 Bayeux.ClientId.rawValue: self.cometdClientId! as AnyObject,
                 Bayeux.ConnectionType.rawValue: BayeuxConnection.WebSocket.rawValue as AnyObject,
@@ -146,13 +148,30 @@ extension CometdClient {
     // "channel": "/meta/disconnect",
     // "clientId": "Un1q31d3nt1f13r"
     func disconnect() {
-        guard let cometdClientId = self.cometdClientId else { return }
+        guard let cometdClientId = self.cometdClientId, isConnected() else { return }
         writeOperationQueue.sync { [unowned self] in
-            let dict:[String:AnyObject] = [Bayeux.Channel.rawValue: BayeuxChannel.Disconnect.rawValue as AnyObject, Bayeux.ClientId.rawValue: cometdClientId as AnyObject, Bayeux.ConnectionType.rawValue: BayeuxConnection.WebSocket.rawValue as AnyObject]
+            let messageId = self.nextMessageId()
+            let dict:[String:AnyObject] = [
+                Bayeux.Id.rawValue: messageId as AnyObject,
+                Bayeux.Channel.rawValue: BayeuxChannel.Disconnect.rawValue as AnyObject,
+                Bayeux.ClientId.rawValue: cometdClientId as AnyObject
+            ]
             if let string = JSON(dict).rawString(String.Encoding.utf8, options: []) {
                 self.log.verbose("CometdClient disconnect \(string)")
                 self.transport?.writeString("["+string+"]")
             }
+        }
+    }
+    
+    func subscribe(_ models:[CometdSubscriptionModel]) {
+        writeOperationQueue.sync { [unowned self] in
+            let objects: [String] = models.compactMap({ (model) -> String? in
+                self.pendingSubscriptions.append(model)
+                return try? model.jsonString()
+            })
+            let json = "[" + objects.joined(separator: ",") + "]"
+            self.log.verbose("CometdClient subscribe \(json)")
+            self.transport?.writeString(json)
         }
     }
     

@@ -19,6 +19,28 @@ public enum CometdSubscriptionState {
     case queued(CometdSubscriptionModel)
     case subscribingTo(CometdSubscriptionModel)
     case unknown(CometdSubscriptionModel?)
+    
+    var isSubscribingTo: Bool {
+        switch self {
+        case .subscribingTo:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    var model: CometdSubscriptionModel? {
+        switch self {
+        case .pending(let model),
+             .subscribed(let model),
+             .queued(let model),
+             .subscribingTo(let model),
+             .unknown(let model?):
+            return model
+        default:
+            return nil
+        }
+    }
 }
 
 // MARK: Type Aliases
@@ -162,78 +184,46 @@ open class CometdClient : TransportDelegate {
         }
     }
     
-    open func subscribeToChannel(_ model:CometdSubscriptionModel, block:ChannelSubscriptionBlock?=nil) -> (CometdSubscriptionState, Subscription?) {
-        // Initial suscription
-        guard !self.isSubscribedToChannel(model.subscriptionUrl) else {
-            log.info("CometdClient subscribeToChannel intial subscription")
-            var sub = Subscription(callback:nil, channel: model.subscriptionUrl, id: 0)
-            if let block = block {
-                
-                if self.channelSubscriptionBlocks[model.subscriptionUrl] == nil
-                {
-                    self.channelSubscriptionBlocks[model.subscriptionUrl] = []
-                }
-                
-                sub.callback = block
-                sub.id = self.channelSubscriptionBlocks[model.subscriptionUrl]!.count
-                
-                self.channelSubscriptionBlocks[model.subscriptionUrl]!.append(sub)
-            }
-            
-            return (.subscribed(model), sub)
-        }
-        
-        // Additional subscription
-        guard !self.pendingSubscriptions.contains(where: { $0 == model }) else {
-            log.info("CometdClient subscribeToChannel pending subscription")
-            
-            var sub = Subscription(callback:nil, channel: model.subscriptionUrl, id: 0)
-            if let block = block {
-                
-                if self.channelSubscriptionBlocks[model.subscriptionUrl] == nil
-                {
-                    self.channelSubscriptionBlocks[model.subscriptionUrl] = []
-                }
-                
-                sub.callback = block
-                sub.id = self.channelSubscriptionBlocks[model.subscriptionUrl]!.count
-                
-                self.channelSubscriptionBlocks[model.subscriptionUrl]!.append(sub)
-            }
-            
-            return (.pending(model), sub)
-        }
-        
+    open func modelToSubscription(tuple: ModelBlockTuple) -> (state: CometdSubscriptionState, subscription: Subscription?) {
+        let model = tuple.model
         var sub = Subscription(callback:nil, channel: model.subscriptionUrl, id: 0)
-        if let block = block {
-        
-            if self.channelSubscriptionBlocks[model.subscriptionUrl] == nil
-            {
+        if let block = tuple.block {
+            
+            if self.channelSubscriptionBlocks[model.subscriptionUrl] == nil {
                 self.channelSubscriptionBlocks[model.subscriptionUrl] = []
             }
-        
             sub.callback = block
             sub.id = self.channelSubscriptionBlocks[model.subscriptionUrl]!.count
-        
+            
             self.channelSubscriptionBlocks[model.subscriptionUrl]!.append(sub)
         }
         
-        if self.cometdConnected == false {
+        if self.isSubscribedToChannel(model.subscriptionUrl) {
+            // If channel is already subscribed
+            log.info("CometdClient subscribeToChannel intial subscription")
+            return (.subscribed(model), sub)
+        } else if self.pendingSubscriptions.contains(where: { $0 == model }) {
+            // If channel is already in pending status
+            log.info("CometdClient subscribeToChannel pending subscription")
+            return (.pending(model), sub)
+        } else if self.cometdConnected == false {
+            // If connection is not yet established
             self.queuedSubscriptions.append(model)
-            
             return (.queued(model), sub)
+        } else {
+            return (.subscribingTo(model), sub)
         }
-        
-        self.subscribe(model)
-        
-        return (.subscribingTo(model), sub)
     }
     
-    open func subscribeToChannel(_ channel:String, block:ChannelSubscriptionBlock?=nil) -> (CometdSubscriptionState, Subscription?) {
-        return subscribeToChannel(
-            CometdSubscriptionModel(subscriptionUrl: channel, clientId: cometdClientId),
-            block: block
-        )
+    open func subscribeToChannel(_ channel: String, block: ChannelSubscriptionBlock? = nil) -> (state: CometdSubscriptionState, subscription: Subscription?) {
+        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: cometdClientId)
+        let tuple = ModelBlockTuple(model: model, block: block)
+        return modelToSubscription(tuple: tuple)
+    }
+    
+    open func subscribeToChannel(_ model: CometdSubscriptionModel, block: ChannelSubscriptionBlock? = nil) -> (state: CometdSubscriptionState, subscription: Subscription?) {
+        let tuple = ModelBlockTuple(model: model, block: block)
+        return modelToSubscription(tuple: tuple)
     }
     
     open func unsubscribeFromChannel(_ subscription:Subscription) {

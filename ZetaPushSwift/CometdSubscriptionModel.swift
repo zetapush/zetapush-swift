@@ -20,7 +20,7 @@ public enum CometdSubscriptionModelError: Error {
 
 ///  Subscription Model
 open class CometdSubscriptionModel {
-    
+    static var id: Int = 0;
     /// Subscription URL
     open let subscriptionUrl: String
     
@@ -45,7 +45,8 @@ open class CometdSubscriptionModel {
         self.subscriptionUrl = subscriptionUrl
         self.bayeuxChannel = bayeuxChannel
         self.clientId = clientId
-        self.id = 0
+        CometdSubscriptionModel.id += 1
+        self.id = CometdSubscriptionModel.id
     }
     
     // MARK:
@@ -75,6 +76,7 @@ open class CometdSubscriptionModel {
         
         return [Bayeux.Channel.rawValue: bayeuxChannel.rawValue as AnyObject,
                 Bayeux.ClientId.rawValue: clientId as AnyObject,
+                Bayeux.Id.rawValue: id as AnyObject,
                 Bayeux.Subscription.rawValue: subscriptionUrl as AnyObject]
     }
 }

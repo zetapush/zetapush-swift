@@ -16,20 +16,15 @@ extension CometdClient {
     
     func subscribeQueuedSubscriptions() {
         // if there are any outstanding open subscriptions resubscribe
-        for channel in self.queuedSubscriptions {
-            _ = removeChannelFromQueuedSubscriptions(channel.subscriptionUrl)
-            _ = subscribeToChannel(channel)
-        }
+        self.queuedSubscriptions.forEach { removeChannelFromQueuedSubscriptions($0.subscriptionUrl) }
+        self.subscribe(self.queuedSubscriptions)
     }
     
     func resubscribeToPendingSubscriptions() {
         if !pendingSubscriptions.isEmpty {
             log.debug("Cometd: Resubscribing to \(pendingSubscriptions.count) pending subscriptions")
-            
-            for channel in pendingSubscriptions {
-                _ = removeChannelFromPendingSubscriptions(channel.subscriptionUrl)
-                _ = subscribeToChannel(channel)
-            }
+            self.pendingSubscriptions.forEach { removeChannelFromPendingSubscriptions($0.subscriptionUrl) }
+            self.subscribe(self.pendingSubscriptions)
         }
     }
     
@@ -54,7 +49,7 @@ extension CometdClient {
         readOperationQueue.sync { [unowned self] in
             if let jsonData = message.data(using: String.Encoding.utf8, allowLossyConversion: false) {
                 if let json = try? JSON(data: jsonData) {
-                    self.parseCometdMessage(json)
+                    self.parseCometdMessage(json.arrayValue)
                 }
             }
         }
@@ -73,6 +68,7 @@ extension CometdClient {
     // MARK:
     // MARK: Subscriptions
     
+    @discardableResult
     func removeChannelFromQueuedSubscriptions(_ channel: String) -> Bool {
         objc_sync_enter(self.queuedSubscriptions)
         defer { objc_sync_exit(self.queuedSubscriptions) }
@@ -88,6 +84,7 @@ extension CometdClient {
         return false
     }
     
+    @discardableResult
     func removeChannelFromPendingSubscriptions(_ channel: String) -> Bool {
         objc_sync_enter(self.pendingSubscriptions)
         defer { objc_sync_exit(self.pendingSubscriptions) }
@@ -103,6 +100,7 @@ extension CometdClient {
         return false
     }
     
+    @discardableResult
     func removeChannelFromOpenSubscriptions(_ channel: String) -> Bool {
         objc_sync_enter(self.pendingSubscriptions)
         defer { objc_sync_exit(self.pendingSubscriptions) }

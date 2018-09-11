@@ -148,7 +148,7 @@ extension CometdClient {
     // "channel": "/meta/disconnect",
     // "clientId": "Un1q31d3nt1f13r"
     func disconnect() {
-        guard let cometdClientId = self.cometdClientId else { return }
+        guard let cometdClientId = self.cometdClientId, isConnected() else { return }
         writeOperationQueue.sync { [unowned self] in
             let messageId = self.nextMessageId()
             let dict:[String:AnyObject] = [

@@ -33,14 +33,17 @@ extension CometdClient {
     }
     
     public func didWriteError(_ error: Error?) {
+        log.error("CometdClient didWriteError " + error.debugDescription)
         self.delegate?.cometdClientError(self, error: error ?? CometdSocketError.transportWrite)
     }
     
     public func didReceiveMessage(_ text: String) {
+        log.debug("CometdClient didReceiveMessage " + text)
         self.receive(text)
     }
     
     public func didReceivePong() {
+        log.debug("CometdClient didReceivePong")
         self.delegate?.pongReceived(self)
     }
 }

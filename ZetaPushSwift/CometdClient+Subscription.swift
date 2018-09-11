@@ -16,6 +16,8 @@ extension CometdClient {
     
     func subscribeQueuedSubscriptions() {
         // if there are any outstanding open subscriptions resubscribe
+        log.debug("Cometd: Subscribing to \(queuedSubscriptions.count) queued subscriptions")
+
         self.queuedSubscriptions.forEach { removeChannelFromQueuedSubscriptions($0.subscriptionUrl) }
         self.subscribe(self.queuedSubscriptions)
     }
@@ -29,6 +31,8 @@ extension CometdClient {
     }
     
     func unsubscribeAllSubscriptions() {
+        log.debug("Cometd: unsubscribe all subscriptions")
+
         let all = queuedSubscriptions + openSubscriptions + pendingSubscriptions
         
         all.forEach({ clearSubscriptionFromChannel(Subscription(callback: nil, channel:$0.subscriptionUrl, id:$0.id!)) })
@@ -38,6 +42,7 @@ extension CometdClient {
     // MARK: Send/Receive
     
     func send(_ message: NSDictionary) {
+        log.debug("Cometd: send message : \(message)")
         writeOperationQueue.async { [unowned self] in
             if let string = JSON(message).rawString() {
                 self.transport?.writeString(string)
@@ -46,6 +51,7 @@ extension CometdClient {
     }
     
     func receive(_ message: String) {
+        log.debug("Cometd: receive message : \(message)")
         readOperationQueue.sync { [unowned self] in
             if let jsonData = message.data(using: String.Encoding.utf8, allowLossyConversion: false) {
                 if let json = try? JSON(data: jsonData) {

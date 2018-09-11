@@ -16,6 +16,7 @@ extension CometdClient {
     // MARK: Parsing
     
     func parseCometdMessage(_ messages: [JSON]) {
+        log.debug("parse Cometd message : \(messages.description)")
         messages.forEach { (message) in
             if let channel = message[Bayeux.Channel.rawValue].string {
                 log.verbose("parseCometdMessage \(channel)")

@@ -13,8 +13,6 @@ import XCGLogger
     Base class for managing ZetaPush connexion
 */
 
-
-
 open class ClientHelper : NSObject, CometdClientDelegate{
     
     var sandboxId:String = ""
@@ -314,6 +312,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     
     @objc
     func connectionFailedTimer(timer: Timer){
+        log.debug("ClientHelper connection failed timer", userInfo: [tags: "zetapush"])
         self.connect()
     }
     

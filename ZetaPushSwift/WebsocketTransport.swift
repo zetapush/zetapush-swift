@@ -14,7 +14,7 @@ import XCGLogger
 internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDelegate {
     var urlString:String?
     var webSocket:WebSocket?
-    internal weak var delegate:TransportDelegate?
+    internal var delegate:TransportDelegate!
     
     let log = XCGLogger(identifier: "websocketLogger", includeDefaultDestinations: true)
     
@@ -28,6 +28,7 @@ internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDe
         self.closeConnection()
         self.webSocket = WebSocket(url: URL(string:self.urlString!)!)
         if let webSocket = self.webSocket {
+            log.debug("Cometd: open connection")
             webSocket.delegate = self
             webSocket.pongDelegate = self
             webSocket.connect()
@@ -37,16 +38,12 @@ internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDe
     }
     
     func closeConnection() {
-        if let webSocket = self.webSocket {
-            
-            webSocket.delegate = nil
-            webSocket.disconnect(forceTimeout: 0)
-            
-            self.webSocket = nil
-        }
+        log.debug("Cometd: close connection | ws is connected -> \(self.webSocket?.isConnected ?? false)")
+        self.webSocket?.disconnect(forceTimeout: 100)
     }
     
     func writeString(_ aString:String) {
+        log.debug("Cometd: write string. socket -> \(webSocket?.isConnected ?? false)")
         self.webSocket?.write(string: aString)
     }
     
@@ -60,18 +57,24 @@ internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDe
     
     // MARK: Websocket Delegate
     internal func websocketDidConnect(socket: WebSocketClient) {
+        log.debug("Cometd: did connect")
         self.delegate?.didConnect()
     }
     
     internal func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
+        log.debug("Cometd: did disconnect : \(error.debugDescription)")
         if error == nil {
             self.delegate?.didDisconnect(CometdSocketError.lostConnection)
         } else {
             self.delegate?.didFailConnection(error)
         }
+        
+        self.webSocket?.delegate = nil
+        self.webSocket = nil
     }
     
     internal func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
+        log.debug("Cometd: Received message : \(text)")
         self.delegate?.didReceiveMessage(text)
     }
     
@@ -83,10 +86,12 @@ internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDe
     
     // MARK: WebSocket Pong Delegate
     internal func websocketDidReceivePong(_ socket: WebSocketClient) {
+        log.debug("Cometd: Received pong")
         self.delegate?.didReceivePong()
     }
     
     func websocketDidReceivePong(socket: WebSocketClient, data: Data?) {
+        log.debug("Cometd: Received pong")
         self.delegate?.didReceivePong()
     }
 }

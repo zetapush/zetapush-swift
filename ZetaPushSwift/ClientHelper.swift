@@ -37,7 +37,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     var logLevel: XCGLogger.Level = .severe
     
     fileprivate var authentication: AbstractHandshake?
-    var cometdClient: CometdClient?
+    let cometdClient: CometdClient
     
     open weak var delegate:ClientHelperDelegate?
     
@@ -67,7 +67,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
             }
         }
         
-        self.cometdClient?.delegate = self
+        self.cometdClient.delegate = self
     }
     
     open func setAuthentication(authentication: AbstractHandshake){
@@ -79,11 +79,11 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     }
     
     // Disconnect from server
-    open func disconnect(){
+    open func disconnect() {
         log.debug("ClientHelper disconnect", userInfo: [tags: "zetapush"])
-        self.wasConnected = false;
-        self.connected = false;
-        cometdClient!.disconnectFromServer()
+        self.wasConnected = false
+        self.connected = false
+        cometdClient.disconnectFromServer()
     }
     
     // Connect to server
@@ -113,9 +113,9 @@ open class ClientHelper : NSObject, CometdClientDelegate{
                 self.log.debug("ZetaPush selected Server")
                 self.log.debug(self.server)
                 
-                self.cometdClient?.setLogLevel(logLevel: self.logLevel)
-                self.cometdClient?.configure(url: self.server)
-                self.cometdClient?.connectHandshake(self.authentication!.getHandshakeFields(self))
+                self.cometdClient.setLogLevel(logLevel: self.logLevel)
+                self.cometdClient.configure(url: self.server)
+                self.cometdClient.connectHandshake(self.authentication!.getHandshakeFields(self))
             }
             
             task.resume()
@@ -124,46 +124,43 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         } else {
             log.debug("ZetaPush configured Server", userInfo: [tags: "zetapush"])
             log.debug(self.server, userInfo: [tags: "zetapush"])
-            self.cometdClient?.configure(url: self.server)
-            self.cometdClient?.connectHandshake(self.authentication!.getHandshakeFields(self))
+            self.cometdClient.configure(url: self.server)
+            self.cometdClient.connectHandshake(self.authentication!.getHandshakeFields(self))
         }
         
     }
 
     open func subscribe(_ tuples: [ModelBlockTuple]) {
-        guard let client = self.cometdClient else {
-            return
-        }
         // Convert model to subscription
-        let models = tuples.map(client.mapModelToSubscription).compactMap { (state, _) -> CometdSubscriptionModel? in
-            switch state {
-                case .subscribingTo(let model): return model
-                default: return nil
-            }
-        }
+        let models: [CometdSubscriptionModel] = tuples.map(cometdClient.modelToSubscription)
+            .filter { $0.state.isSubscribingTo }
+            .compactMap { $0.state.model }
         // Batch subscriptions
-        client.subscribe(models)
+        cometdClient.subscribe(models)
     }
     
-    open func subscribe(_ channel:String, block:ChannelSubscriptionBlock?=nil) -> Subscription? {
-        let (_, sub) = self.cometdClient!.subscribeToChannel(channel, block: block)
-        
+    @discardableResult
+    open func subscribe(_ channel: String, block: ChannelSubscriptionBlock? = nil) -> Subscription? {
+        let (state, sub) = self.cometdClient.subscribeToChannel(channel, block: block)
         guard sub != nil else {
             self.log.error ("sub is NILLLLLL", userInfo: [tags: "zetapush"])
             self.log.error (channel, userInfo: [tags: "zetapush"])
             return nil
         }
-
+        if case let .subscribingTo(model) = state {
+            // if channel to subscribe is in state = subscribing to we need to launch the subscription of it
+            cometdClient.subscribe(model)
+        }
         return sub
     }
     
     open func publish(_ channel:String, message:[String:AnyObject]) {
-        self.cometdClient!.publish(message, channel: channel)
+        self.cometdClient.publish(message, channel: channel)
     }
     
     open func unsubscribe(_ subscription:Subscription){
         log.debug("ClientHelper unsubscribe", userInfo: [tags: "zetapush"])
-        self.cometdClient!.unsubscribeFromChannel(subscription)
+        self.cometdClient.unsubscribeFromChannel(subscription)
         if let index = self.subscriptionQueue.index(of: subscription){
             self.subscriptionQueue.remove(at: index)
         }
@@ -176,7 +173,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     }
     
     open func setForceSecure(_ isSecure: Bool){
-        self.cometdClient!.setForceSecure(isSecure)
+        self.cometdClient.setForceSecure(isSecure)
     }
     
     open func composeServiceChannel(_ verb: String, deploymentId: String) -> String {
@@ -202,7 +199,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     func eraseHandshakeToken(){}
     
     open func getClientId() -> String{
-        return self.cometdClient!.getCometdClientId()
+        return self.cometdClient.getCometdClientId()
     }
     
     open func getHandshakeFields() -> [String: AnyObject]{
@@ -230,7 +227,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
     }
     
     open func isConnected() -> Bool{
-        return self.cometdClient?.isConnected() ?? false
+        return self.cometdClient.isConnected()
     }
     
     open func getPublicToken() -> String{
@@ -254,7 +251,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
         self.wasConnected = self.connected;
         self.connected = true;
         if (!self.wasConnected && self.connected) {
-            _ = self.cometdClient?.pendingSubscriptionSchedule.isValid
+            _ = self.cometdClient.pendingSubscriptionSchedule.isValid
             self.delegate?.onConnectionEstablished(self);
         }
     }
@@ -292,7 +289,7 @@ open class ClientHelper : NSObject, CometdClientDelegate{
             }
             self.subscriptionQueue.removeAll()
             for sub in tempArray {
-                _ = self.subscribe(sub.channel, block: sub.callback)
+                self.subscribe(sub.channel, block: sub.callback)
             }
         }
         firstHandshakeFlag = false

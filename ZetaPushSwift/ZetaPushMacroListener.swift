@@ -9,263 +9,197 @@
 import Foundation
 import Gloss
 
-open class ZetaPushMacroListener{
+open class ZetaPushMacroListener {
     
-    public var clientHelper: ClientHelper?
+    public let clientHelper: ClientHelper
     public var zetaPushMacroService: ZetaPushMacroService
     open var onMacroError : ZPMacroServiceErrorBlock?
     
-    public init(_ clientHelper: ClientHelper, deploymentId: String){
+    public init(_ clientHelper: ClientHelper, deploymentId: String) {
         self.clientHelper = clientHelper
         self.zetaPushMacroService = ZetaPushMacroService(clientHelper, deploymentId: deploymentId)
         self.register()
     }
+
     // Must be overriden by descendants
-    open func register(){}
-    
-    public convenience init(_ clientHelper: ClientHelper){
+    open func register() {}
+
+    public convenience init(_ clientHelper: ClientHelper) {
         self.init(clientHelper, deploymentId: zetaPushDefaultConfig.macroDeployementId)
     }
     /**
      
      */
-    public func getModelBlock<T: Glossy>(verb: String, callback: @escaping (T)->Void) -> ModelBlockTuple {
-        let channel = (self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!))!
-        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper?.cometdClient?.cometdClientId)
-        return ModelBlockTuple(model: model, block: {(messageDict: NSDictionary) -> Void in
-            if messageDict.object(forKey: "errors") != nil {
-                if let errors = messageDict["errors"] as? NSArray {
-                    if errors.count > 0 {
-                        if let error = errors[0] as? NSDictionary {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.genericFromDictionnary(error))
-                        } else {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.unknowError)
-                        }
-                    }
-                }
+    public func getModelBlock<T: Glossy>(verb: String, callback: @escaping (T) -> Void) -> ModelBlockTuple {
+        let channel = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!)
+        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient.cometdClientId)
+        return ModelBlockTuple(model: model, block: { (messageDict: NSDictionary) -> Void in
+
+            self.handleMacroErrors(from: messageDict)
+            guard let zpMessage: T = self.parse(messageDict: messageDict) else {
+                self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
+                return
             }
-            if let result = messageDict["result"] as? NSDictionary {
-                guard let zpMessage = T(json: result as! JSON) else {
-                    self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
-                    return
-                }
-                callback(zpMessage)
-            }
+            callback(zpMessage)
         })
     }
-    public func getModelBlock<T: Glossy>(verb: String, callback: @escaping ([T])->Void) -> ModelBlockTuple {
-        let channel = (self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!))!
-        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper?.cometdClient?.cometdClientId)
+
+    public func getModelBlock<T: Glossy>(verb: String, callback: @escaping ([T]) -> Void) -> ModelBlockTuple {
+        let channel = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!)
+        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient.cometdClientId)
         return ModelBlockTuple(model: model, block: {(messageDict: NSDictionary) -> Void in
-            if messageDict.object(forKey: "errors") != nil {
-                if let errors = messageDict["errors"] as? NSArray {
-                    if errors.count > 0 {
-                        if let error = errors[0] as? NSDictionary {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.genericFromDictionnary(error))
-                        } else {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.unknowError)
-                        }
-                    }
-                }
+
+            self.handleMacroErrors(from: messageDict)
+            guard let zpMessage: [T] = self.parse(messageDict: messageDict) else {
+                self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
+                return
             }
-            if let result = messageDict["result"] as? NSDictionary {
-                guard let zpMessage = [T].from(jsonArray: result.allKeys as! [JSON]) else {
-                    self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
-                    return
-                }
-                callback(zpMessage)
-            }
+            callback(zpMessage)
         })
     }
-    public func getModelBlock<T: AbstractMacroCompletion>(verb: String, callback: @escaping (T)->Void) -> ModelBlockTuple {
-        let channel = (self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!))!
-        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper?.cometdClient?.cometdClientId)
+
+    public func getModelBlock<T: AbstractMacroCompletion>(verb: String, callback: @escaping (T) -> Void) -> ModelBlockTuple {
+        let channel = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!)
+        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient.cometdClientId)
         return ModelBlockTuple(model: model, block: {(messageDict: NSDictionary) -> Void in
-            if messageDict.object(forKey: "errors") != nil {
-                if let errors = messageDict["errors"] as? NSArray {
-                    if errors.count > 0 {
-                        if let error = errors[0] as? NSDictionary {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.genericFromDictionnary(error))
-                        } else {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.unknowError)
-                        }
-                    }
-                }
+            
+            self.handleMacroErrors(from: messageDict)
+            guard let zpMessage: T = self.parse(messageDict: messageDict, verb: verb) else {
+                self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
+                return
             }
-            if let result = messageDict["result"] as? NSDictionary {
-                guard let zpMessage = T.resultType(json: result as! JSON) else {
-                    self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
-                    return
-                }
-                let completion = T(result: zpMessage, name: verb, requestId: "")
-                callback(completion)
-            }
+            callback(zpMessage)
         })
     }
-    public func getModelBlock(verb: String, callback: @escaping (NSDictionary)->Void) -> ModelBlockTuple {
-        let channel = (self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!))!
-        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper?.cometdClient?.cometdClientId)
+
+    public func getModelBlock<T: NSDictionary>(verb: String, callback: @escaping (T) -> Void) -> ModelBlockTuple {
+        let channel = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!)
+        let model = CometdSubscriptionModel(subscriptionUrl: channel, clientId: self.clientHelper.cometdClient.cometdClientId)
         return ModelBlockTuple(model: model, block: {(messageDict: NSDictionary) -> Void in
-            if messageDict.object(forKey: "errors") != nil {
-                if let errors = messageDict["errors"] as? NSArray {
-                    if errors.count > 0 {
-                        if let error = errors[0] as? NSDictionary {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.genericFromDictionnary(error))
-                        } else {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.unknowError)
-                        }
-                    }
-                }
+            
+            self.handleMacroErrors(from: messageDict)
+            guard let zpMessage: T = self.parse(messageDict: messageDict) else {
+                self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
+                return
             }
-            if let result = messageDict["result"] as? NSDictionary {
-                callback(result)
-            }
+            callback(zpMessage)
+
         })
     }
 
     
     public func subscribe(_ tuples: [ModelBlockTuple]) {
-        _ = self.clientHelper?.subscribe(tuples);
+        self.clientHelper.subscribe(tuples)
     }
     
-    /*
-     Generic Subscribe with a Generic parameter
-     */
-    public func subscribe<T: Glossy>(verb: String, callback: @escaping (T)->Void) {
+    /// Generic Subscribe with a Generic parameter
+    public func subscribe<T: Glossy>(verb: String, callback: @escaping (T) -> Void) {
         
         let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
             
-            if messageDict.object(forKey: "errors") != nil {
-                if let errors = messageDict["errors"] as? NSArray {
-                    if errors.count > 0 {
-                        if let error = errors[0] as? NSDictionary {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.genericFromDictionnary(error))
-                        } else {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.unknowError)
-                        }
-                    }
-                }
+            self.handleMacroErrors(from: messageDict)
+            guard let zpMessage: T = self.parse(messageDict: messageDict) else {
+                self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
+                return
             }
-            
-            if let result = messageDict["result"] as? NSDictionary {
-                
-                guard let zpMessage = T(json: result as! JSON) else {
-                    
-                    self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
-                    return
-                }
-                
-                callback(zpMessage)
-            }
-            
+            callback(zpMessage)
         }
-        
-        _ = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!))!, block: channelBlockServiceCall)
+        let channel: String = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!)
+        self.clientHelper.subscribe(channel, block: channelBlockServiceCall)
         
     }
     
-    /*
-     Generic Subscribe with a Generic parameter
-     */
-    public func subscribe<T: AbstractMacroCompletion>(verb: String, callback: @escaping (T)->Void) {
+    /// Generic Subscribe with a Generic parameter
+    public func subscribe<T: AbstractMacroCompletion>(verb: String, callback: @escaping (T) -> Void) {
         
         let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
             
-            if messageDict.object(forKey: "errors") != nil {
-                if let errors = messageDict["errors"] as? NSArray {
-                    if errors.count > 0 {
-                        if let error = errors[0] as? NSDictionary {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.genericFromDictionnary(error))
-                        } else {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.unknowError)
-                        }
-                    }
-                }
+            self.handleMacroErrors(from: messageDict)
+            guard let zpMessage: T = self.parse(messageDict: messageDict, verb: verb) else {
+                self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
+                return
             }
-            
-            if let result = messageDict["result"] as? NSDictionary {
-                
-                guard let zpMessage = T.resultType(json: result as! JSON) else {
-                    
-                    self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
-                    return
-                }
-                
-                let completion = T(result: zpMessage, name: verb, requestId: "")
-                
-                callback(completion)
-            }
-            
+            callback(zpMessage)
         }
-        
-        _ = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!))!, block: channelBlockServiceCall)
+        let channel: String = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!)
+        self.clientHelper.subscribe(channel, block: channelBlockServiceCall)
         
     }
     
-    /*
-     Generic Subscribe with a Generic Array parameter
-     */
-    public func subscribe<T: Glossy>(verb: String, callback: @escaping ([T])->Void) {
-        
+    /// Generic Subscribe with a Generic Array parameter
+    public func subscribe<T: Glossy>(verb: String, callback: @escaping ([T]) -> Void) {
         let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
             
-            if messageDict.object(forKey: "errors") != nil {
-                if let errors = messageDict["errors"] as? NSArray {
-                    if errors.count > 0 {
-                        if let error = errors[0] as? NSDictionary {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.genericFromDictionnary(error))
-                        } else {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.unknowError)
-                        }
-                    }
-                }
+            self.handleMacroErrors(from: messageDict)
+            guard let zpMessage: [T] = self.parse(messageDict: messageDict) else {
+                self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
+                return
             }
-        
-        
-            if let result = messageDict["result"] as? NSDictionary {
-                guard let zpMessage = [T].from(jsonArray: result.allKeys as! [JSON]) else {
-                    
-                    self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
-                    return
-                }
-                
-                callback(zpMessage)
-            }
-            
+            callback(zpMessage)
         }
         
-        _ = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!))!, block: channelBlockServiceCall)
+        let channel: String = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!)
+        self.clientHelper.subscribe(channel, block: channelBlockServiceCall)
         
     }
     
-    /*
-        Generic Subscribe with a NSDictionary parameter
-     */
-    public func subscribe(verb: String, callback: @escaping (NSDictionary)->Void) {
-        
+    /// Generic Subscribe with a NSDictionary parameter
+    public func subscribe<T: NSDictionary>(verb: String, callback: @escaping (T) -> Void) {
         let channelBlockServiceCall:ChannelSubscriptionBlock = {(messageDict) -> Void in
             
-            if messageDict.object(forKey: "errors") != nil {
-                if let errors = messageDict["errors"] as? NSArray {
-                    if errors.count > 0 {
-                        if let error = errors[0] as? NSDictionary {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.genericFromDictionnary(error))
-                        } else {
-                            self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.unknowError)
-                        }
-                    }
-                }
+            self.handleMacroErrors(from: messageDict)
+            guard let zpMessage: T = self.parse(messageDict: messageDict) else {
+                self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.decodingError)
+                return
             }
-            
-            if let result = messageDict["result"] as? NSDictionary {
-                
-                callback(result)
-            }
-            
+            callback(zpMessage)
+
         }
         
-        _ = self.clientHelper?.subscribe((self.clientHelper?.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!))!, block: channelBlockServiceCall)
+        let channel: String = self.clientHelper.composeServiceChannel(verb, deploymentId: self.zetaPushMacroService.deploymentId!)
+        self.clientHelper.subscribe(channel, block: channelBlockServiceCall)
         
     }
     
+    // MARK: - private funcs
+    private func handleMacroErrors(from messageDict: NSDictionary) {
+        if let errors = messageDict["errors"] as? NSArray, messageDict.object(forKey: "errors") != nil && errors.count > 0 {
+            if let error = errors[0] as? NSDictionary {
+                self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.genericFromDictionnary(error))
+            } else {
+                self.onMacroError?(self.zetaPushMacroService, ZetaPushMacroError.unknowError)
+            }
+        }
+    }
+    
+    private func parse<T: Glossy>(messageDict: NSDictionary) -> T? {
+        guard let result = messageDict["result"] as? NSDictionary,
+            let zpMessage = T(json: result as! JSON) else {
+                return nil
+        }
+        return zpMessage
+    }
+    
+    private func parse<T: Glossy>(messageDict: NSDictionary) -> [T]? {
+        guard let result = messageDict["result"] as? NSDictionary,
+            let zpMessage = [T].from(jsonArray: result.allKeys as! [JSON]) else {
+                return nil
+        }
+        return zpMessage
+    }
+    
+    private func parse<T: AbstractMacroCompletion>(messageDict: NSDictionary, verb: String) -> T? {
+        guard let result = messageDict["result"] as? NSDictionary,
+            let zpMessage = T.resultType(json: result as! JSON) else {
+                return nil
+        }
+        return T(result: zpMessage, name: verb, requestId: "")
+    }
+    
+    private func parse<T: NSDictionary>(messageDict: NSDictionary) -> T? {
+        guard let zpMessage = messageDict["result"] as? T else {
+                return nil
+        }
+        return zpMessage
+    }
 }

@@ -30,9 +30,11 @@ internal class WebsocketTransport: Transport {
         if let webSocket = self.webSocket {
             log.debug("Cometd: open connection")
             webSocket.event.open = {
+                self.log.debug("Cometd: socket open")
                 self.delegate.didConnect()
             }
-            webSocket.event.close = { _, _, _ in
+            webSocket.event.close = { code, reason, clean in
+                self.log.debug("Cometd: socket close (\(code);\(reason);\(clean)")
                 self.delegate.didDisconnect(CometdSocketError.lostConnection)
             }
             webSocket.event.error = { error in

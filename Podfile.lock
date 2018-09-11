@@ -12,7 +12,7 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (6.4.0):
     - PromiseKit/CorePromise
-  - Starscream (3.0.5)
+  - SwiftWebSocket (2.7.0)
   - SwiftyJSON (3.1.4)
   - XCGLogger (6.0.4):
     - XCGLogger/Core (= 6.0.4)
@@ -22,7 +22,7 @@ PODS:
 DEPENDENCIES:
   - Gloss (~> 2.0)
   - PromiseKit (~> 6.3)
-  - Starscream
+  - SwiftWebSocket (~> 2.7)
   - SwiftyJSON (~> 3.1)
   - XCGLogger (~> 6.0)
 
@@ -31,7 +31,7 @@ SPEC REPOS:
     - Gloss
     - ObjcExceptionBridging
     - PromiseKit
-    - Starscream
+    - SwiftWebSocket
     - SwiftyJSON
     - XCGLogger
 
@@ -39,10 +39,10 @@ SPEC CHECKSUMS:
   Gloss: 1e8743f8de1fbe14a97f220ff901cba91ae5f8f8
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   PromiseKit: ae3616f45d7bb9bf4ff1e91abc9b7a8c48a340e0
-  Starscream: faf918b2f2eff7d5dd21180646bf015a669673bd
+  SwiftWebSocket: 612c9729fd503cb6b0b8b45390c788686dac306f
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
   XCGLogger: 4fc1bc0bdd5828cb8dc8da7a843536cda1bea8f3
 
-PODFILE CHECKSUM: 7911cbf3962ec5988eb24c4f90fc8308c7b92ddb
+PODFILE CHECKSUM: 3167b6a3d4ee3193473be5def33c66268e02f0fd
 
 COCOAPODS: 1.5.3

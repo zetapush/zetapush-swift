@@ -11,7 +11,7 @@ public protocol Transport {
     func writeString(_ aString:String)
     func openConnection()
     func closeConnection()
-    func isConnected() -> (Bool)
+    var isConnected: Bool { get }
 }
 
 public protocol TransportDelegate: class {

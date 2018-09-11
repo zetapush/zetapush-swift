@@ -178,12 +178,6 @@ open class CometdClient : TransportDelegate {
         self.publish(messageDict, channel: channel)
     }
     
-    open func sendPing(_ data: Data, completion: (() -> ())?) {
-        writeOperationQueue.async { [unowned self] in
-            self.transport?.sendPing(data, completion: completion)
-        }
-    }
-    
     open func modelToSubscription(tuple: ModelBlockTuple) -> (state: CometdSubscriptionState, subscription: Subscription?) {
         let model = tuple.model
         var sub = Subscription(callback:nil, channel: model.subscriptionUrl, id: 0)

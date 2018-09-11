@@ -9,7 +9,7 @@ target 'ZetaPushSwift' do
   use_frameworks!
 
   # Pods for ZetaPushSwift
-  pod 'Starscream'
+  pod 'SwiftWebSocket', '~> 2.7'
   pod 'SwiftyJSON', '~> 3.1'
   pod 'PromiseKit', '~> 6.3'
   pod 'XCGLogger', '~> 6.0'

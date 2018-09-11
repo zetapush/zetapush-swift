@@ -8,10 +8,10 @@
 // Adapted from https://github.com/hamin/FayeSwift
 
 import Foundation
-import Starscream
+import SwiftWebSocket
 import XCGLogger
 
-internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDelegate {
+internal class WebsocketTransport: Transport {
     var urlString:String?
     var webSocket:WebSocket?
     internal var delegate:TransportDelegate!
@@ -29,70 +29,44 @@ internal class WebsocketTransport: Transport, WebSocketDelegate, WebSocketPongDe
         self.webSocket = WebSocket(url: URL(string:self.urlString!)!)
         if let webSocket = self.webSocket {
             log.debug("Cometd: open connection")
-            webSocket.delegate = self
-            webSocket.pongDelegate = self
-            webSocket.connect()
-            
+            webSocket.event.open = {
+                self.delegate.didConnect()
+            }
+            webSocket.event.close = { _, _, _ in
+                self.delegate.didDisconnect(CometdSocketError.lostConnection)
+            }
+            webSocket.event.error = { error in
+                self.log.debug("Cometd: Received error : \(error)")
+                self.delegate.didFailConnection(error)
+            }
+            webSocket.event.message = { message in
+                guard let text = message as? String else {
+                    return
+                }
+                self.log.debug("Cometd: Received message : \(text)")
+                self.delegate?.didReceiveMessage(text)
+            }
+            webSocket.open()
             log.debug("Cometd: Opening connection with \(String(describing: self.urlString))")
         }
     }
     
     func closeConnection() {
-        log.debug("Cometd: close connection | ws is connected -> \(self.webSocket?.isConnected ?? false)")
-        self.webSocket?.disconnect(forceTimeout: 100)
+        log.debug("Cometd: close connection | ws is connected -> \(isConnected)")
+        guard isConnected else {
+            return
+        }
+        self.webSocket?.close()
+    }
+    
+    var isConnected: Bool {
+        let state = self.webSocket?.readyState ?? .closed
+        return state == .open
     }
     
     func writeString(_ aString:String) {
-        log.debug("Cometd: write string. socket -> \(webSocket?.isConnected ?? false)")
-        self.webSocket?.write(string: aString)
-    }
-    
-    func sendPing(_ data: Data, completion: (() -> ())? = nil) {
-        self.webSocket?.write(ping: data, completion: completion)
-    }
-    
-    func isConnected() -> (Bool) {
-        return self.webSocket?.isConnected ?? false
-    }
-    
-    // MARK: Websocket Delegate
-    internal func websocketDidConnect(socket: WebSocketClient) {
-        log.debug("Cometd: did connect")
-        self.delegate?.didConnect()
-    }
-    
-    internal func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
-        log.debug("Cometd: did disconnect : \(error.debugDescription)")
-        if error == nil {
-            self.delegate?.didDisconnect(CometdSocketError.lostConnection)
-        } else {
-            self.delegate?.didFailConnection(error)
-        }
-        
-        self.webSocket?.delegate = nil
-        self.webSocket = nil
-    }
-    
-    internal func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
-        log.debug("Cometd: Received message : \(text)")
-        self.delegate?.didReceiveMessage(text)
-    }
-    
-    // MARK: TODO
-    internal func websocketDidReceiveData(socket: WebSocketClient, data: Data) {
-        log.debug("Cometd: Received data: \(data.count)")
-        //self.socket.writeData(data)
-    }
-    
-    // MARK: WebSocket Pong Delegate
-    internal func websocketDidReceivePong(_ socket: WebSocketClient) {
-        log.debug("Cometd: Received pong")
-        self.delegate?.didReceivePong()
-    }
-    
-    func websocketDidReceivePong(socket: WebSocketClient, data: Data?) {
-        log.debug("Cometd: Received pong")
-        self.delegate?.didReceivePong()
+        log.debug("Cometd: write string. socket -> \(isConnected)")
+        self.webSocket?.send(aString)
     }
 }
 

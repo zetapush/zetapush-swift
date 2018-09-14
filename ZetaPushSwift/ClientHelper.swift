@@ -106,7 +106,8 @@ open class ClientHelper : NSObject, CometdClientDelegate{
                     return
                 }
                 
-                guard let jsonAny = try? JSONSerialization.jsonObject(with: data!, options: []),
+                guard let data = data,
+                    let jsonAny = try? JSONSerialization.jsonObject(with: data, options: []),
                     let json = jsonAny as? [String : AnyObject],
                     let servers = json["servers"] as? [AnyObject] else {
                     self.log.error ("Failed to parse data from server", userInfo: [self.tags: "zetapush"])

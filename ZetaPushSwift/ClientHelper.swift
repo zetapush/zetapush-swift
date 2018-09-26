@@ -104,10 +104,20 @@ open class ClientHelper : NSObject, CometdClientDelegate{
                     return
                 }
                 
-                let json = try! JSONSerialization.jsonObject(with: data!, options: []) as! [String:AnyObject]
-                let servers = json["servers"] as! [AnyObject]
+                guard let data = data,
+                    let jsonAny = try? JSONSerialization.jsonObject(with: data, options: []),
+                    let json = jsonAny as? [String : AnyObject],
+                    let servers = json["servers"] as? [AnyObject] else {
+                    self.log.error ("Failed to parse data from server", userInfo: [self.tags: "zetapush"])
+                    return
+                }
+                
                 let randomIndex = Int(arc4random_uniform(UInt32(servers.count)))
-                self.server = servers[randomIndex] as! String + "/strd"
+                guard let randomServer = servers[randomIndex] as? String else {
+                        self.log.error ("No server in servers object", userInfo: [self.tags: "zetapush"])
+                    return
+                }
+                self.server = randomServer + "/strd"
                 self.log.debug("ZetaPush selected Server")
                 self.log.debug(self.server)
                 
